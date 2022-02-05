@@ -1,0 +1,15 @@
+{% extends "cost/base.html" %}
+ 
+{% block title %}My Blog{% endblock %}
+ 
+{% block content %}
+  <h1>Производство</h1>
+  {% for prod in product %}
+    <h2>
+      <a href="{{ prod.get_absolute_url }}">
+        {{ prod.name }}
+      </a>
+    </h2>
+
+  {% endfor %}
+{% endblock %}

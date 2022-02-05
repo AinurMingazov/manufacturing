@@ -1,0 +1,48 @@
+{% extends "cost/base.html" %}
+ 
+{% block title %}{{ detail.name }}{% endblock %}
+ 
+{% block content %}
+<div id="main" class="product-list">
+  <h1>{{ product.name }}</h1>
+Требуется изготовление деталей : <br>
+ <table>
+   <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
+    {% for detail in productdetails %}
+      <tr>
+        <td>{{ detail.detail.name }}</td>
+        <td>{{ detail.amount_details }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+
+<br><br><br>
+Требуется закупка стандартных изделий: <br>
+ <table>
+   <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
+    {% for detail in productstandartdetails %}
+      <tr>
+        <td>{{ detail.standart_detail.name }}</td>
+        <td>{{ detail.amount_standart_detail }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <p class="date"> 
+    Published {{ post.publish }} by {{ post.author }} 
+  </p> 
+  {{ post.body|linebreaks }} 
+{% endblock %}

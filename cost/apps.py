@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class MaterialConsumptionConfig(AppConfig):
+class CostConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'material_consumption'
+    name = 'cost'
