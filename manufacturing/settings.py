@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cost.apps.CostConfig',
-    # 'material_consumption.apps.MaterialConsumptionConfig'
+
 ]
 
 MIDDLEWARE = [

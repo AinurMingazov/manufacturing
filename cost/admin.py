@@ -27,7 +27,7 @@ class DetailAdmin(admin.ModelAdmin):
 
 @admin.register(LaborCosts)
 class LaborCostsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'slug']
+    list_display = ['name', 'machine']
     prepopulated_fields = {'slug': ('name',)}
     list_filter = ['name', 'slug']
 
