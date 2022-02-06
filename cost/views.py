@@ -53,6 +53,23 @@ def productdetails_detail(request, product_slug):
     productstandarddetails = ProductStandardDetail.objects.filter(product=product)
     for detail in productdetails.all():
         detaillaborcosts=list(chain(detaillaborcosts, DetailLaborCosts.objects.filter(detail=detail.detail)))
+        print(detaillaborcosts)
+        labor_machine_list = []
+        labor_machine = {}
+        for labor in detaillaborcosts:
+            labor_machine_list.append(labor.labor.machine)
+            print(set(labor_machine_list))
+        for labor in detaillaborcosts:
+
+            if labor.labor.machine in labor_machine_list:
+                labor_machine[labor.labor.machine] += labor.time_details
+
+            labor_machine_list.append(labor.labor.machine)
+            print(labor_machine)
+    # print(labor.labor.machine)
+    # if labor.labor.machine in labor_machine_list:
+    #     labor.time_details += labor.time_details
+    #     detaillaborcosts.remove(labor)
 
     return render(request,
                   'cost/product_detail.html',
