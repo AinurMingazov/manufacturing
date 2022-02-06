@@ -18,27 +18,29 @@
    <br><br><br>
 Трудозатраты: <br><br>
  <table>
-   <tr><th>Наименование</th><th>Станок</th><th>Кол-во, час.</th></tr>
-    {% for detail in detaillaborcosts %}
+   <tr><th>Станок</th><th>Кол-во, час.</th></tr>
+    {% for key, value in labor_machine.items %}
       <tr>
-        <td>{{ detail.labor }}</td>
-          <td>{{ detail.labor.machine }}</td>
-        <td>{{ detail.time_details }}</td>
+        <td>{{ key }}</td>
+          <td>{{ value }}</td>
       </tr>
     {% endfor %}
+<!--     {% for detail in detaillaborcosts %}-->
+<!--      <tr>-->
+<!--        <td>{{ detail.labor }}</td>-->
+<!--          <td>{{ detail.labor.machine }}</td>-->
+<!--        <td>{{ detail.time_details }}</td>-->
+<!--      </tr>-->
+<!--    {% endfor %}-->
     </table>
-
-
-
     <br><br><br>
 Материалы: <br><br>
  <table>
-   <tr><th>Наименование</th><th>Кол-во</th><th>ед. изм.</th></tr>
-    {% for detail in productdetails %}
+   <tr><th>Наименование</th><th>Кол-во</th></tr>
+    {% for key, value in details.items %}
       <tr>
-        <td>{{ detail.detail.material }}</td>
-        <td>{{ detail.detail.amount_material }}</td>
-        <td>{{ detail.detail.unit }}</td>
+        <td>{{ key }}</td>
+          <td>{{ value }}</td>
       </tr>
     {% endfor %}
     </table>
@@ -46,10 +48,10 @@
 Стандартные изделия: <br><br>
  <table>
    <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
-    {% for detail in productstandarddetails %}
+    {% for key, value in standard_details.items %}
       <tr>
-        <td>{{ detail.standard_detail.name }}</td>
-        <td>{{ detail.amount_standard_detail }}</td>
+        <td>{{ key }}</td>
+          <td>{{ value }}</td>
       </tr>
     {% endfor %}
     </table>

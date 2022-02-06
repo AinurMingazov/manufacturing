@@ -1,11 +1,13 @@
 from django.db import models
 from django.urls import reverse
 
+
 class LaborCosts(models.Model):
     """Модель описывает трудозатраты"""
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=60, unique=True)
     machine = models.CharField(max_length=50, null=True)
+    mach_slug = models.CharField(max_length=50, null=True)
 
     def __str__(self):
         return self.name
@@ -20,15 +22,19 @@ class DetailLaborCosts(models.Model):
     time_details = models.PositiveIntegerField(default=0)
     cost_details = models.PositiveIntegerField(default=0)
 
+    class Meta:
+        ordering = ('time_details',)
+
 
 class Detail(models.Model):
     """Модель описывает деталь"""
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=60, unique=True)
     material = models.CharField(max_length=200)
+    mat_slug = models.CharField(max_length=200, null=True, blank=True)
     amount_material = models.PositiveIntegerField(default=0)
-    unit = models.CharField(max_length=40)
-    weight = models.PositiveIntegerField(default=0)
+    unit = models.CharField(max_length=40, null=True, blank=True)
+    weight = models.PositiveIntegerField(default=0, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -54,9 +60,9 @@ class StandardDetail(models.Model):
     """Модель описывает стандартные детали"""
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
-    amount_material = models.PositiveIntegerField(default=0)
-    unit = models.CharField(max_length=40)
-    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
+    amount_material = models.PositiveIntegerField(default=0, null=True, blank=True)
+    unit = models.CharField(max_length=40, null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -89,8 +95,8 @@ class Product(models.Model):
     """Модель описывает изделия"""
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
-    amount = models.PositiveIntegerField(default=0)
-    unit = models.CharField(max_length=40)
+    amount = models.PositiveIntegerField(default=0, null=True, blank=True)
+    unit = models.CharField(max_length=40, null=True, blank=True)
     details = models.ManyToManyField(
         Detail,
         through='ProductDetail',
@@ -112,7 +118,7 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product_detail',
-                       kwargs={"product_slug": self.slug})
+                       kwargs={"product_slug":self.slug})
 
     class Meta:
         ordering = ('name',)
