@@ -7,4 +7,6 @@ urlpatterns = [
     # path("<slug:slug>/", views.ProductDetailView.as_view(),  name="product_detail"),
     path('<slug:product_slug>/', views.productdetails_detail,
          name='product_detail'),
+    path('detail/<int:id>/', views.detail_detail,
+         name='detail_detail'),
 ]

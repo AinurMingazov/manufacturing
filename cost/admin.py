@@ -1,132 +1,130 @@
 from django.contrib import admin
 
-from cost.models import Detail, Product, StandardDetail, LaborCosts
+from cost.models import Detail, Product, StandardDetail, Labor, Assembly
 from import_export.admin import ImportExportActionModelAdmin
 from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget
 
 
-class DetailInlineAdmin(admin.TabularInline):
+class ProductDetailInlineAdmin(admin.TabularInline):
     model = Product.details.through
 
 
-class LaborCostsInlineAdmin(admin.TabularInline):
-    model = Detail.detail_labor_costs.through
+class AssemblyDetailInlineAdmin(admin.TabularInline):
+    model = Assembly.details.through
 
 
-class StandardDetailInlineAdmin(admin.TabularInline):
+class ProductStandardDetailInlineAdmin(admin.TabularInline):
     model = Product.standard_details.through
 
-# для загрузки талбиц
-class DetailResource(resources.ModelResource):
 
+class AssemblyStandardDetailInlineAdmin(admin.TabularInline):
+    model = Assembly.standard_details.through
+
+
+class ProductLaborInlineAdmin(admin.TabularInline):
+    model = Product.labors.through
+
+
+class AssemblyLaborInlineAdmin(admin.TabularInline):
+    model = Assembly.labors.through
+
+
+class DetailLaborInlineAdmin(admin.TabularInline):
+    model = Detail.labors.through
+
+
+class AssemblyProductInlineAdmin(admin.TabularInline):
+    model = Product.assemblies.through
+
+
+class DetailResource(resources.ModelResource):
     class Meta:
         model = Detail
         fieldsets = [
-            (None, {'fields': ['name', 'slug', 'material', 'amount_material', 'mat_slug']})
+            (None, {'fields': ['id', 'name', 'material', 'amount', 'unit', ]})
         ]
-        prepopulated_fields = {'slug': ('name',), 'mat_slug': ('material',), }
+        prepopulated_fields = {'slug': ('name',), }
         list_filter = ['name', 'slug']
-        inlines = (LaborCostsInlineAdmin,)
+        inlines = (DetailLaborInlineAdmin,)
 
 
 class DetailAdmin(ImportExportActionModelAdmin):
     resource_class = DetailResource
     list_display = [field.name for field in Detail._meta.fields if field.name != "id"]
-    inlines = [LaborCostsInlineAdmin]
+    inlines = [DetailLaborInlineAdmin]
+
+
 admin.site.register(Detail, DetailAdmin)
 
-# @admin.register(Detail)
-# class DetailAdmin(admin.ModelAdmin):
-#     fieldsets = [
-#         (None, {'fields': ['name', 'slug', 'material', 'amount_material', 'mat_slug']})
-#     ]
-#     prepopulated_fields = {'slug': ('name',), 'mat_slug': ('material',), }
-#     list_filter = ['name', 'slug']
-#     inlines = ('LaborCostsInlineAdmin',)
 
-
-class LaborCostsResource(resources.ModelResource):
-
+class LaborResource(resources.ModelResource):
     class Meta:
-        model = LaborCosts
-        fields = ('id', 'name', 'machine', 'mach_slug', 'slug')
-        prepopulated_fields = {'slug': ('name',), 'mach_slug': ('machine',), }
+        model = Labor
+        fields = ('id', 'name', 'machine',)
         list_filter = ['name', 'slug']
 
 
-class ProductAdmin(ImportExportActionModelAdmin):
-    resource_class = ProductResource
-    list_display = [field.name for field in Product._meta.fields if field.name != "id"]
-    inlines = [DetailInlineAdmin, StandardDetailInlineAdmin]
-admin.site.register(Product, ProductAdmin)
+class LaborAdmin(ImportExportActionModelAdmin):
+    resource_class = LaborResource
+    list_display = [field.name for field in Labor._meta.fields if field.name != "id"]
 
-# @admin.register(Product)
-# class ProductAdmin(admin.ModelAdmin):
-#     fieldsets = [
-#         (None, {'fields': ['name', 'slug',]})
-#     ]
-#     prepopulated_fields = {'slug': ('name',)}
-#     list_filter = ['name', 'slug']
-#     inlines = (DetailInlineAdmin, StandardDetailInlineAdmin)
 
-class LaborCostsAdmin(ImportExportActionModelAdmin):
-    resource_class = LaborCostsResource
-    list_display = [field.name for field in LaborCosts._meta.fields if field.name != "id"]
-admin.site.register(LaborCosts, LaborCostsAdmin)
-
-# @admin.register(LaborCosts)
-# class LaborCostsAdmin(admin.ModelAdmin):
-#     list_display = ['name', 'machine', 'mach_slug', 'slug']
-#     prepopulated_fields = {'slug': ('name',), 'mach_slug': ('machine',), }
-#     list_filter = ['name', 'slug']
+admin.site.register(Labor, LaborAdmin)
 
 
 class StandardDetailResource(resources.ModelResource):
-
     class Meta:
         model = StandardDetail
-        fields = ('id', 'name',  'slug')
-        prepopulated_fields = {'slug': ('name',), 'mach_slug': ('machine',), }
-        list_filter = ['name', 'slug']
+        fields = ('id', 'name',)
+        list_filter = ['name', ]
 
 
 class StandardDetailAdmin(ImportExportActionModelAdmin):
     resource_class = StandardDetailResource
     list_display = [field.name for field in StandardDetail._meta.fields if field.name != "id"]
+
+
 admin.site.register(StandardDetail, StandardDetailAdmin)
 
 
-# @admin.register(StandardDetail)
-# class StandardDetailAdmin(admin.ModelAdmin):
-#     list_display = ['name', 'slug',]
-#     prepopulated_fields = {'slug': ('name',)}
-#     list_filter = ['name', 'slug']
-
 class ProductResource(resources.ModelResource):
-
     class Meta:
         model = Product
         fieldsets = [
-            (None, {'fields': ['name', 'slug', ]})
+            (None, {'fields': ['name', 'slug', 'amount', 'unit']})
         ]
         prepopulated_fields = {'slug': ('name',), }
         list_filter = ['name', 'slug']
-        inlines = (DetailInlineAdmin, StandardDetailInlineAdmin)
+        inlines = (ProductDetailInlineAdmin, ProductStandardDetailInlineAdmin, ProductLaborInlineAdmin,
+                   AssemblyProductInlineAdmin)
 
 
 class ProductAdmin(ImportExportActionModelAdmin):
     resource_class = ProductResource
     list_display = [field.name for field in Product._meta.fields if field.name != "id"]
-    inlines = [DetailInlineAdmin, StandardDetailInlineAdmin]
+    inlines = (ProductDetailInlineAdmin, ProductStandardDetailInlineAdmin, ProductLaborInlineAdmin,
+               AssemblyProductInlineAdmin)
+
+
 admin.site.register(Product, ProductAdmin)
 
-# @admin.register(Product)
-# class ProductAdmin(admin.ModelAdmin):
-#     fieldsets = [
-#         (None, {'fields': ['name', 'slug',]})
-#     ]
-#     prepopulated_fields = {'slug': ('name',)}
-#     list_filter = ['name', 'slug']
-#     inlines = (DetailInlineAdmin, StandardDetailInlineAdmin)
 
+class AssemblyResource(resources.ModelResource):
+    class Meta:
+        model = Assembly
+        fieldsets = [
+            (None, {'fields': ['name', 'slug', ]})
+        ]
+        prepopulated_fields = {'slug': ('name',), }
+        list_filter = ['name', 'slug']
+        inlines = (AssemblyLaborInlineAdmin, AssemblyStandardDetailInlineAdmin, AssemblyDetailInlineAdmin)
+
+
+class AssemblyAdmin(ImportExportActionModelAdmin):
+    resource_class = AssemblyResource
+    list_display = [field.name for field in Assembly._meta.fields if field.name != "id"]
+    inlines = (AssemblyLaborInlineAdmin, AssemblyStandardDetailInlineAdmin, AssemblyDetailInlineAdmin)
+
+
+admin.site.register(Assembly, AssemblyAdmin)
