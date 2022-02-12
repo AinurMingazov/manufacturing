@@ -204,4 +204,3 @@ class AssemblyLabor(models.Model):
 
     class Meta:
         ordering = ('assembly',)
-
