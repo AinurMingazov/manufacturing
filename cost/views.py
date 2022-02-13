@@ -3,12 +3,12 @@ from itertools import chain
 # Create your views here.
 from django.views.generic import ListView, DetailView
 
-from cost.models import Product, ProductDetail, ProductStandardDetail, Detail, DetailLabor, ProductLabor
+from cost.models import Product, ProductDetail, ProductStandardDetail, Detail, DetailLabor, ProductLabor, \
+    AssemblyProduct, Assembly, AssemblyDetail, AssemblyLabor, AssemblyStandardDetail
 
 
 def product_list(request,):
-    """Функция показываем все инструменты по умолчанию,
-    позволяет настроить фильтр по категориям и/или по владельцам."""
+    """Функция показывает список изделий"""
     product = Product.objects.all()
     return render(request,
                   'cost/product_list.html',
@@ -21,22 +21,43 @@ def detail_detail(request, id):
     detail = get_object_or_404(Detail, id=id)
     detail_labors = DetailLabor.objects.filter(detail=detail)
     return render(request,
-                    'cost/detail_detail.html',
+                  'cost/detail_detail.html',
                   {'detail': detail,
                    'detail_labors': detail_labors
                    })
 
 
+def assembly_detail(request, assembly_slug):
+    """Функция отображает подробную информацию о сборочной единице."""
+    assembly = get_object_or_404(Assembly, slug=assembly_slug)
+    assemblydetails = AssemblyDetail.objects.filter(assembly=assembly)
+    assemblylabor = AssemblyLabor.objects.filter(assembly=assembly)
+    assemblystandarddetail = AssemblyStandardDetail.objects.filter(assembly=assembly)
+    print(assemblylabor)
+    return render(request,
+                  'cost/assembly_detail.html',
+                  {'assembly': assembly,
+                   'assemblydetails': assemblydetails,
+                   'assemblylabor': assemblylabor,
+                   'assemblystandarddetail': assemblystandarddetail
+                   })
 
-def productdetails_detail(request, product_slug):
+
+def product_detail(request, product_slug):
     """Функция отображает подробную информацию о продукте."""
     product = get_object_or_404(Product, slug=product_slug)
     productdetails = ProductDetail.objects.filter(product=product)
+    productassemblies = AssemblyProduct.objects.filter(product=product)
+    productlabor = ProductLabor.objects.filter(product=product)
+    productstandarddetail = ProductStandardDetail.objects.filter(product=product)
 
     return render(request,
                   'cost/product_detail.html',
                   {'product': product,
                    'productdetails': productdetails,
+                   'productassemblies': productassemblies,
+                   'productlabor': productlabor,
+                   'productstandarddetail': productstandarddetail
                    })
 
 

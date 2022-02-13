@@ -5,12 +5,25 @@
 {% block content %}
 <div id="main" class="product-list">
   <h1>{{ product.name }}</h1>
+Сборочные единицы: <br><br>
+ <table>
+   <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
+    {% for assembly in productassemblies %}
+      <tr>
+        <td><a href="{% url 'assembly_detail' assembly.assembly.slug %}">{{ assembly.assembly }}</a></td>
+        <td>{{ assembly.amount_assemblies }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+   <br><br><br>
+
+
 Детали: <br><br>
  <table>
    <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
     {% for detail in productdetails %}
       <tr>
-        <td>{{ detail.detail.name }}</td>
+        <td><a href="{% url 'detail_detail' detail.detail.id %}">{{ detail.detail.name }}</a></td>
         <td>{{ detail.amount_details }}</td>
       </tr>
     {% endfor %}
@@ -18,59 +31,26 @@
    <br><br><br>
 Трудозатраты: <br><br>
  <table>
-   <tr><th>Станок</th><th>Кол-во, час.</th></tr>
-    {% for key, value in labor_machine.items %}
+   <tr><th>Операция</th><th>Кол-во, час.</th></tr>
+    {% for product in productlabor %}
       <tr>
-        <td>{{ key }}</td>
-          <td>{{ value }}</td>
+        <td>{{ product.labor.name }}</td>
+        <td>{{ product.time }}</td>
       </tr>
     {% endfor %}
-<!--     {% for detail in detaillaborcosts %}-->
-<!--      <tr>-->
-<!--        <td>{{ detail.labor }}</td>-->
-<!--          <td>{{ detail.labor.machine }}</td>-->
-<!--        <td>{{ detail.time_details }}</td>-->
-<!--      </tr>-->
-<!--    {% endfor %}-->
     </table>
     <br><br><br>
-Материалы: <br><br>
- <table>
-   <tr><th>Наименование</th><th>Кол-во</th></tr>
-    {% for key, value in details.items %}
-      <tr>
-        <td>{{ key }}</td>
-          <td>{{ value }}</td>
-      </tr>
-    {% endfor %}
-    </table>
-<br><br><br>
 Стандартные изделия: <br><br>
  <table>
    <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
-    {% for key, value in standard_details.items %}
+    {% for product in productstandarddetail %}
       <tr>
-        <td>{{ key }}</td>
-          <td>{{ value }}</td>
+        <td>{{ product.standard_detail.name }}</td>
+        <td>{{ product.amount_standard_details }}</td>
       </tr>
     {% endfor %}
     </table>
-
+ <br><hr><br><br>
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-  <p class="date"> 
-    Published {{ post.publish }} by {{ post.author }} 
-  </p> 
-  {{ post.body|linebreaks }} 
 {% endblock %}

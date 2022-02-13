@@ -1,0 +1,42 @@
+{% extends "cost/base.html" %}
+ 
+{% block title %}{{ assembly.name }}{% endblock %}
+ 
+{% block content %}
+<div id="main" class="product-list">
+  <h1>{{ assembly.name }}</h1>
+Детали: <br><br>
+ <table>
+   <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
+    {% for detail in assemblydetails %}
+      <tr>
+        <td><a href="{% url 'detail_detail' detail.detail.id %}">{{ detail.detail.name }}</a></td>
+        <td>{{ detail.amount_details }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+   <br><br><br>
+Трудозатраты: <br><br>
+ <table>
+   <tr><th>Операция</th><th>Кол-во, час.</th></tr>
+    {% for labor in assemblylabor %}
+      <tr>
+        <td>{{ labor.labor.name }}</td>
+        <td>{{ labor.time }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+    <br><br><br>
+Стандартные изделия: <br><br>
+ <table>
+   <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
+    {% for standarddetail in assemblystandarddetail %}
+      <tr>
+        <td>{{ standarddetail.standard_detail.name }}</td>
+        <td>{{ standarddetail.amount_standard_details }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+     <br><hr><br><br>
+</div>
+{% endblock %}
