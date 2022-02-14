@@ -4,45 +4,28 @@
  
 {% block content %}
 <div id="main" class="product-list">
-  <h1>{{ product.name }}</h1>
-Требуется изготовление деталей : <br>
+  <h1>{{ detail.name }}</h1>
+Материал: <br>
  <table>
-   <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
-    {% for detail in productdetails %}
+   <tr><th>Наименование</th><th>Кол-во</th><th>Ед. изм.</th></tr>
       <tr>
-        <td>{{ detail.detail.name }}</td>
-        <td>{{ detail.amount_details }}</td>
+        <td>{{ detail.material }}</td>
+        <td>{{ detail.amount  }}</td>
+        <td>{{ detail.unit  }}</td>
       </tr>
-    {% endfor %}
+
     </table>
 
 <br><br><br>
-Требуется закупка стандартных изделий: <br>
+Трудозатраты: <br>
  <table>
-   <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
-    {% for detail in productstandartdetails %}
+   <tr><th>Наименование</th><th>Кол-во, час</th></tr>
+    {% for detail in detail_labors %}
       <tr>
-        <td>{{ detail.standart_detail.name }}</td>
-        <td>{{ detail.amount_standart_detail }}</td>
+        <td>{{ detail.labor }}</td>
+        <td>{{ detail.time }}</td>
       </tr>
     {% endfor %}
     </table>
-
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-  <p class="date"> 
-    Published {{ post.publish }} by {{ post.author }} 
-  </p> 
-  {{ post.body|linebreaks }} 
 {% endblock %}
