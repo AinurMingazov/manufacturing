@@ -11,7 +11,7 @@
     {% for assembly in productassemblies %}
       <tr>
         <td><a href="{% url 'assembly_detail' assembly.assembly.slug %}">{{ assembly.assembly }}</a></td>
-        <td>{{ assembly.amount_assemblies }}</td>
+        <td>{{ assembly.amount }}</td>
       </tr>
     {% endfor %}
     </table>
@@ -24,7 +24,7 @@
     {% for detail in productdetails %}
       <tr>
         <td><a href="{% url 'detail_detail' detail.detail.id %}">{{ detail.detail.name }}</a></td>
-        <td>{{ detail.amount_details }}</td>
+        <td>{{ detail.amount }}</td>
       </tr>
     {% endfor %}
     </table>
@@ -46,7 +46,7 @@
     {% for product in productstandarddetail %}
       <tr>
         <td>{{ product.standard_detail.name }}</td>
-        <td>{{ product.amount_standard_details }}</td>
+        <td>{{ product.amount }}</td>
       </tr>
     {% endfor %}
     </table>

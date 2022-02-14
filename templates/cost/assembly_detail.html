@@ -11,7 +11,7 @@
     {% for detail in assemblydetails %}
       <tr>
         <td><a href="{% url 'detail_detail' detail.detail.id %}">{{ detail.detail.name }}</a></td>
-        <td>{{ detail.amount_details }}</td>
+        <td>{{ detail.amount }}</td>
       </tr>
     {% endfor %}
     </table>
@@ -33,7 +33,7 @@
     {% for standarddetail in assemblystandarddetail %}
       <tr>
         <td>{{ standarddetail.standard_detail.name }}</td>
-        <td>{{ standarddetail.amount_standard_details }}</td>
+        <td>{{ standarddetail.amount }}</td>
       </tr>
     {% endfor %}
     </table>

@@ -4,7 +4,7 @@ from itertools import chain
 from django.views.generic import ListView, DetailView
 
 from cost.models import Product, ProductDetail, ProductStandardDetail, Detail, DetailLabor, ProductLabor, \
-    AssemblyProduct, Assembly, AssemblyDetail, AssemblyLabor, AssemblyStandardDetail
+    ProductAssembly, Assembly, AssemblyDetail, AssemblyLabor, AssemblyStandardDetail, DetailMaterial
 
 
 def product_list(request,):
@@ -20,10 +20,12 @@ def detail_detail(request, id):
     """Функция отображает подробную информацию о детали."""
     detail = get_object_or_404(Detail, id=id)
     detail_labors = DetailLabor.objects.filter(detail=detail)
+    detail_materials = DetailMaterial.objects.filter(detail=detail)
     return render(request,
                   'cost/detail_detail.html',
                   {'detail': detail,
-                   'detail_labors': detail_labors
+                   'detail_labors': detail_labors,
+                   'detail_materials': detail_materials
                    })
 
 
@@ -47,7 +49,7 @@ def product_detail(request, product_slug):
     """Функция отображает подробную информацию о продукте."""
     product = get_object_or_404(Product, slug=product_slug)
     productdetails = ProductDetail.objects.filter(product=product)
-    productassemblies = AssemblyProduct.objects.filter(product=product)
+    productassemblies = ProductAssembly.objects.filter(product=product)
     productlabor = ProductLabor.objects.filter(product=product)
     productstandarddetail = ProductStandardDetail.objects.filter(product=product)
 
@@ -60,6 +62,58 @@ def product_detail(request, product_slug):
                    'productstandarddetail': productstandarddetail
                    })
 
+
+def product_requirements(request, product_slug):
+    """Функция отображает все затраты для изготовления продукта."""
+    product = get_object_or_404(Product, slug=product_slug)
+    productassemblies = ProductAssembly.objects.filter(product=product)
+    assembly_detail_material_dict = dict()
+    for assembly in productassemblies.all():
+        for detail in assembly.assembly.details.all():
+            assemblydetails = AssemblyDetail.objects.filter(detail_id=detail.id)
+            for assemblydetail in assemblydetails.all():
+                pass
+            count = detail.amount * assemblydetail.amount_details * assembly.amount_assemblies
+            temp_dict = dict.fromkeys([detail.id], count)
+            try:
+                assembly_detail_material_dict[detail.id] += temp_dict[detail.id]
+            except KeyError:
+                assembly_detail_material_dict[detail.id] = temp_dict[detail.id]
+
+    productdetails = ProductDetail.objects.filter(product=product)
+    detail_material_dict = dict()
+    for detail in productdetails.all():
+        count = detail.detail.amount * detail.amount_details
+        temp_dict = dict.fromkeys([detail.id], count)
+        print(temp_dict)
+        try:
+            detail_material_dict[detail.id] += temp_dict[detail.id]
+        except KeyError:
+            detail_material_dict[detail.id] = temp_dict[detail.id]
+
+
+
+    productlabor = ProductLabor.objects.filter(product=product)
+    productstandarddetail = ProductStandardDetail.objects.filter(product=product)
+
+
+
+
+
+    print(detail_material_dict)
+    materials = Detail.objects.filter(id__in=detail_material_dict.keys())
+    for material, val in zip(materials, detail_material_dict.values()):
+        print(material.material + ' - ' + str(val))
+
+    return render(request,
+                  'cost/product_requirements.html',
+                  {'product': product,
+                   'productdetails': productdetails,
+                   'productassemblies': productassemblies,
+                   'productlabor': productlabor,
+                   'productstandarddetail': productstandarddetail,
+
+                   })
 
 
 #
