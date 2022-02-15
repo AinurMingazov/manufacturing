@@ -66,44 +66,92 @@ def product_detail(request, product_slug):
 def product_requirements(request, product_slug):
     """Функция отображает все затраты для изготовления продукта."""
     product = get_object_or_404(Product, slug=product_slug)
-    productassemblies = ProductAssembly.objects.filter(product=product)
+
     assembly_detail_material_dict = dict()
-    for assembly in productassemblies.all():
-        for detail in assembly.assembly.details.all():
-            assemblydetails = AssemblyDetail.objects.filter(detail_id=detail.id)
-            for assemblydetail in assemblydetails.all():
-                pass
-            count = detail.amount * assemblydetail.amount_details * assembly.amount_assemblies
-            temp_dict = dict.fromkeys([detail.id], count)
+    assembly_detail_labor_dict = dict()
+    for assembly in ProductAssembly.objects.filter(product=product):  # перебираем узлы в изделии
+        # print(assembly.assembly.name + ' - ' + str(assembly.amount))
+        for detail in assembly.assembly.details.all():  # перебираем детали в узле
+            for assemblydetail in AssemblyDetail.objects.filter(detail_id=detail.id).filter(assembly_id=assembly.id):
+                # перебираем модель отношения деталей в узле, для возможности обратиться к количеству деталей в узле
+                for det in DetailMaterial.objects.filter(detail_id=detail.id):
+                    # перебираем модель отношение материалов в деталях, для возможности обратиться к количеству
+                    # материалов в детали
+                    count = det.amount * assemblydetail.amount * assembly.amount
+                    # print(detail.name + ' - ' + det.material.name + ' - ' + str(assemblydetail.amount) +
+                    #       ' * ' + str(det.amount) + ' * ' + str(assembly.amount) + ' = ' + str(count))
+                    # соберем словарь ключ id материала значение количество
+                    temp_dict = dict.fromkeys([det.material.id], count)
+                    try:
+                        assembly_detail_material_dict[det.material.id] += temp_dict[det.material.id]
+                    except KeyError:
+                        assembly_detail_material_dict[det.material.id] = temp_dict[det.material.id]
+                for assemblydetlab in DetailLabor.objects.filter(detail_id=detail.id):
+                    count = assemblydetlab.time * assemblydetail.amount * assembly.amount
+                    # print(detail.name + ' - ' + str(assemblydetlab.labor.id) + ' - ' + assemblydetlab.labor.name
+                    #       + ' - ' + assemblydetlab.labor.machine + ' - ' + str(assemblydetlab.time)
+                    #       + ' * ' + str(assemblydetail.amount) + ' * ' + str(assembly.amount) + ' = ' +
+                    #       str(count))
+                    temp_dict = dict.fromkeys([assemblydetlab.labor.id], count)
+                    try:
+                        assembly_detail_labor_dict[assemblydetlab.labor.id] += temp_dict[assemblydetlab.labor.id]
+                    except KeyError:
+                        assembly_detail_labor_dict[assemblydetlab.labor.id] = temp_dict[assemblydetlab.labor.id]
+    # print(assembly_detail_material_dict)
+    # print(assembly_detail_labor_dict)
+
+    detail_material_dict = dict()
+    detail_labor_dict = dict()
+    for productdetail in ProductDetail.objects.filter(product=product):  # перебираем детали в изделии
+        # print(productdetail.detail.name + ' - ' + str(productdetail.amount))
+        for detmat in DetailMaterial.objects.filter(detail_id=productdetail.detail.id):
+            # перебираем модель отношение материалов в деталях, для возможности обратиться к количеству
+            # материалов в детали
+            count = detmat.amount * productdetail.amount
+            # print(productdetail.detail.name + ' - ' + detmat.material.name + ' - ' + str(productdetail.amount) +
+            #       ' * ' + str(detmat.amount) + ' = ' + str(count))
+            temp_dict = dict.fromkeys([detmat.material.id], count)
             try:
-                assembly_detail_material_dict[detail.id] += temp_dict[detail.id]
+                detail_material_dict[detmat.material.id] += temp_dict[detmat.material.id]
             except KeyError:
-                assembly_detail_material_dict[detail.id] = temp_dict[detail.id]
+                detail_material_dict[detmat.material.id] = temp_dict[detmat.material.id]
+        for detlab in DetailLabor.objects.filter(detail_id=productdetail.detail.id):
+            count = detlab.time * productdetail.amount
+            # print(str(detlab.labor.id) + ' - ' + detlab.labor.name + ' - ' + detlab.labor.machine
+            #       + ' - ' + str(detlab.time) + ' - ' + str(count))
+            temp_dict = dict.fromkeys([detlab.labor.id], count)
+            try:
+                detail_labor_dict[detlab.labor.id] += temp_dict[detlab.labor.id]
+            except KeyError:
+                detail_labor_dict[detlab.labor.id] = temp_dict[detlab.labor.id]
+    # print(detail_material_dict)
+    # print(detail_labor_dict)
+
+
+
+
+    # detail_material_dict = dict()
+    # for detail in productdetails.all():
+    #     detailmaterial = DetailMaterial.objects.filter(detail_id=detail.id)
+    #     for det in detailmaterial.all():
+    #         pass
+    #     count = det.amount * detail.amount
+    #     temp_dict = dict.fromkeys([detail.id], count)
+    #     print(temp_dict)
+    #     try:
+    #         detail_material_dict[detail.id] += temp_dict[detail.id]
+    #     except KeyError:
+    #         detail_material_dict[detail.id] = temp_dict[detail.id]
 
     productdetails = ProductDetail.objects.filter(product=product)
-    detail_material_dict = dict()
-    for detail in productdetails.all():
-        count = detail.detail.amount * detail.amount_details
-        temp_dict = dict.fromkeys([detail.id], count)
-        print(temp_dict)
-        try:
-            detail_material_dict[detail.id] += temp_dict[detail.id]
-        except KeyError:
-            detail_material_dict[detail.id] = temp_dict[detail.id]
-
-
-
+    productassemblies = ProductAssembly.objects.filter(product=product)
     productlabor = ProductLabor.objects.filter(product=product)
     productstandarddetail = ProductStandardDetail.objects.filter(product=product)
 
+    # print(detail_material_dict)
 
-
-
-
-    print(detail_material_dict)
-    materials = Detail.objects.filter(id__in=detail_material_dict.keys())
-    for material, val in zip(materials, detail_material_dict.values()):
-        print(material.material + ' - ' + str(val))
+    # for material, val in zip(detailmaterial, detail_material_dict.values()):
+        # print(material.material.name + ' - ' + str(val))
 
     return render(request,
                   'cost/product_requirements.html',
