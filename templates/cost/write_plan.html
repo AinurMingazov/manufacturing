@@ -1,0 +1,19 @@
+{% extends "cost/base.html" %}
+ 
+{% block title %}Создайте производственный план{% endblock %}
+ 
+{% block content %}
+<div id="main" class="product-list">
+  <h2>Создайте производственный план</h2><br>
+ <br> <form action="" method="post">  {% csrf_token %}
+  <p>Название:</p> {{mpform.name}}<br><br>
+
+    Изделие:</p> {{mpprform.product_resources}} </p>
+    Количество:</p> {{mpprform.amount}} </p><br><br>
+
+
+        <input type="submit" value="Submit" />
+    </form>
+</div>
+
+{% endblock %}

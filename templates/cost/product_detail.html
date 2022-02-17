@@ -1,12 +1,11 @@
 {% extends "cost/base.html" %}
- 
 {% block title %}{{ product.name }}{% endblock %}
- 
 {% block content %}
 <div id="main" class="product-list">
-  <h1>{{ product.name }}</h1>
-Сборочные единицы: <br><br>
- <table>
+  <h2>{{ product.name }}</h2><br>
+    <a href="{% url 'product_count' product.slug %}">Подробный расчет всех затрат</a><br><br>
+Сборочные единицы: <br>
+<table>
    <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
     {% for assembly in productassemblies %}
       <tr>
@@ -14,12 +13,10 @@
         <td>{{ assembly.amount }}</td>
       </tr>
     {% endfor %}
-    </table>
-   <br><br><br>
-
-
-Детали: <br><br>
- <table>
+</table>
+   <br><br>
+Детали: <br>
+<table>
    <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
     {% for detail in productdetails %}
       <tr>
@@ -27,10 +24,10 @@
         <td>{{ detail.amount }}</td>
       </tr>
     {% endfor %}
-    </table>
-   <br><br><br>
-Трудозатраты: <br><br>
- <table>
+</table>
+   <br><br>
+Трудозатраты: <br>
+<table>
    <tr><th>Операция</th><th>Кол-во, час.</th></tr>
     {% for product in productlabor %}
       <tr>
@@ -38,10 +35,10 @@
         <td>{{ product.time }}</td>
       </tr>
     {% endfor %}
-    </table>
-    <br><br><br>
-Стандартные изделия: <br><br>
- <table>
+</table>
+    <br><br>
+Стандартные изделия: <br>
+<table>
    <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
     {% for product in productstandarddetail %}
       <tr>
@@ -49,8 +46,11 @@
         <td>{{ product.amount }}</td>
       </tr>
     {% endfor %}
-    </table>
- <br><hr><br><br>
+</table>
+    <br><hr><br>
 </div>
-
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Submit" />
+</form>
 {% endblock %}

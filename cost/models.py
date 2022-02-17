@@ -232,6 +232,9 @@ class ProductResourcesMaterial(models.Model):
     material = models.ForeignKey('Material', on_delete=models.SET_NULL, null=True)
     amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 
+    class Meta:
+        ordering = ('material',)
+
 
 class ProductResourcesStandardDetail(models.Model):
     """Модель описывает необходимые стандартные изделия для изготовления изделия"""
@@ -239,12 +242,18 @@ class ProductResourcesStandardDetail(models.Model):
     standard_detail = models.ForeignKey('StandardDetail', on_delete=models.SET_NULL, null=True)
     amount = models.PositiveIntegerField(default=0)
 
+    class Meta:
+        ordering = ('standard_detail',)
+
 
 class ProductResourcesLabor(models.Model):
     """Модель описывает необходимые трудозатраты для изготовления изделия"""
     product_resources = models.ForeignKey('ProductResources', on_delete=models.SET_NULL, null=True)
     labor = models.ForeignKey('Labor', on_delete=models.SET_NULL, null=True)
     time = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+
+    class Meta:
+        ordering = ('labor',)
 
 
 class ManufacturingPlan(models.Model):

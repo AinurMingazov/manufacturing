@@ -9,7 +9,7 @@
      {% for assembly in productassemblies %}
         {{ assembly.assembly }}
         {{ assembly.amount_assemblies }}
-        {{ assembly.details.amount_details }}<br>
+        {{ assembly.details.amount }}<br>
 
     <table>
     <tr><th>Наименование</th><th>Кол-во</th><th>Ед. изм.</th></tr>
@@ -72,5 +72,8 @@
     </table>
  <br><hr><br><br>
 </div>
-
+<form action="" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Submit" />
+    </form>
 {% endblock %}
