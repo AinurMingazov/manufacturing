@@ -36,7 +36,19 @@
         <td>{{ standarddetail.amount }}</td>
       </tr>
     {% endfor %}
+    </table><br><br><br>
+    Материалы: <br>
+ <table>
+   <tr><th>Наименование</th><th>Кол-во</th><th>Ед. изм.</th></tr>
+       {% for material in assemblymaterials %}
+      <tr>
+        <td><a href="{% url 'material_detail' material.material.id %}">{{ material.material.name }}</a></td>
+        <td>{{ material.amount }}</td>
+        <td>{{ material.material.unit }}</td>
+      </tr>
+    {% endfor %}
     </table>
+
      <br><hr><br><br>
 </div>
 {% endblock %}

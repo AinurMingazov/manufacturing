@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from cost.models import Detail, Product, StandardDetail, Labor, Assembly, Material, ProductResources, ManufacturingPlan
+from cost.models import Detail, Product, StandardDetail, Labor, Assembly, Material, ManufacturingPlan, \
+    DetailLabor, DetailMaterial, MPResources
 from import_export.admin import ImportExportActionModelAdmin
 from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget
@@ -50,20 +51,32 @@ class ProductAssemblyInlineAdmin(admin.TabularInline):
     model = Product.assemblies.through
 
 
-class ProductResourcesMaterialInlineAdmin(admin.TabularInline):
-    model = ProductResources.materials.through
+class MPProductInlineAdmin(admin.TabularInline):
+    model = ManufacturingPlan.products.through
 
 
-class ProductResourcesStandardDetailInlineAdmin(admin.TabularInline):
-    model = ProductResources.standard_details.through
+class MPAssemblyInlineAdmin(admin.TabularInline):
+    model = ManufacturingPlan.assemblies.through
 
 
-class ProductResourcesLaborInlineAdmin(admin.TabularInline):
-    model = ProductResources.labors.through
+class MPDetailInlineAdmin(admin.TabularInline):
+    model = ManufacturingPlan.details.through
 
 
-class ManufacturingPlanProductResourcesInlineAdmin(admin.TabularInline):
-    model = ManufacturingPlan.product_resources.through
+class MPLaborInlineAdmin(admin.TabularInline):
+    model = ManufacturingPlan.labors.through
+
+
+class MPResourcesMaterialInlineAdmin(admin.TabularInline):
+    model = MPResources.materials.through
+
+
+class MPResourcesStandardDetailInlineAdmin(admin.TabularInline):
+    model = MPResources.standard_details.through
+
+
+class MPResourcesLaborInlineAdmin(admin.TabularInline):
+    model = MPResources.labors.through
 
 
 class MaterialResource(resources.ModelResource):
@@ -134,10 +147,9 @@ class AssemblyResource(resources.ModelResource):
     class Meta:
         model = Assembly
         fieldsets = [
-            (None, {'fields': ['name', 'slug', ]})
+            (None, {'fields': ['name', ]})
         ]
-        prepopulated_fields = {'slug': ('name',), }
-        list_filter = ['name', 'slug']
+        list_filter = ['name',]
         inlines = (AssemblyMaterialInlineAdmin, AssemblyLaborInlineAdmin, AssemblyStandardDetailInlineAdmin,
                    AssemblyDetailInlineAdmin)
 
@@ -156,10 +168,9 @@ class ProductResource(resources.ModelResource):
     class Meta:
         model = Product
         fieldsets = [
-            (None, {'fields': ['name', 'slug']})
+            (None, {'fields': ['name', ]})
         ]
-        prepopulated_fields = {'slug': ('name',), }
-        list_filter = ['name', 'slug']
+        list_filter = ['name',]
         inlines = (ProductDetailInlineAdmin, ProductStandardDetailInlineAdmin, ProductLaborInlineAdmin,
                    ProductAssemblyInlineAdmin, ProductMaterialInlineAdmin)
 
@@ -174,42 +185,45 @@ class ProductAdmin(ImportExportActionModelAdmin):
 admin.site.register(Product, ProductAdmin)
 
 
-class ProductResourcesResource(resources.ModelResource):
+class ManufacturingPlanResource(resources.ModelResource):
     class Meta:
-        model = ProductResources
+        model = ManufacturingPlan
         fieldsets = [
             (None, {'fields': ['name', 'slug']})
         ]
         prepopulated_fields = {'slug': ('name',), }
         list_filter = ['name', 'slug']
-        inlines = (ProductResourcesMaterialInlineAdmin, ProductResourcesStandardDetailInlineAdmin,
-                   ProductResourcesLaborInlineAdmin)
-
-
-class ProductResourcesAdmin(ImportExportActionModelAdmin):
-    resource_class = ProductResourcesResource
-    list_display = [field.name for field in ProductResources._meta.fields if field.name != "id"]
-    inlines = (ProductResourcesMaterialInlineAdmin, ProductResourcesStandardDetailInlineAdmin,
-               ProductResourcesLaborInlineAdmin)
-
-
-admin.site.register(ProductResources, ProductResourcesAdmin)
-
-
-class ManufacturingPlanResource(resources.ModelResource):
-    class Meta:
-        model = ManufacturingPlan
-        fieldsets = [
-            (None, {'fields': ['name', ]})
-        ]
-        list_filter = ['name', ]
-        inlines = (ManufacturingPlanProductResourcesInlineAdmin,)
+        inlines = (MPProductInlineAdmin, MPAssemblyInlineAdmin,
+                   MPDetailInlineAdmin, MPLaborInlineAdmin)
 
 
 class ManufacturingPlanAdmin(ImportExportActionModelAdmin):
     resource_class = ManufacturingPlanResource
     list_display = [field.name for field in ManufacturingPlan._meta.fields if field.name != "id"]
-    inlines = (ManufacturingPlanProductResourcesInlineAdmin,)
+    inlines = (MPProductInlineAdmin, MPAssemblyInlineAdmin,
+               MPDetailInlineAdmin, MPLaborInlineAdmin)
 
 
 admin.site.register(ManufacturingPlan, ManufacturingPlanAdmin)
+
+
+class MPResourcesResource(resources.ModelResource):
+    class Meta:
+        model = MPResources
+        fieldsets = [
+            (None, {'fields': ['name',]})
+        ]
+        prepopulated_fields = {'slug': ('name',), }
+        list_filter = ['name', 'slug']
+        inlines = (MPResourcesMaterialInlineAdmin, MPResourcesStandardDetailInlineAdmin,
+                   MPResourcesLaborInlineAdmin)
+
+
+class MPResourcesAdmin(ImportExportActionModelAdmin):
+    resource_class = MPResourcesResource
+    list_display = [field.name for field in MPResources._meta.fields if field.name != "id"]
+    inlines = (MPResourcesMaterialInlineAdmin, MPResourcesStandardDetailInlineAdmin,
+               MPResourcesLaborInlineAdmin)
+
+
+admin.site.register(MPResources, MPResourcesAdmin)

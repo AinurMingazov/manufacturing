@@ -66,7 +66,6 @@ class DetailMaterial(models.Model):
 class Assembly(models.Model):
     """Модель описывает узел"""
     name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True)
     materials = models.ManyToManyField(
         'Material',
         through='AssemblyMaterial',
@@ -126,7 +125,6 @@ class AssemblyLabor(models.Model):
 class Product(models.Model):
     """Модель описывает изделия"""
     name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True)
     materials = models.ManyToManyField(
         'Material',
         through='ProductMaterial',
@@ -202,33 +200,100 @@ class ProductLabor(models.Model):
         ordering = ('product',)
 
 
-class ProductResources(models.Model):
-    """Модель описывает ресурсы необходимые для изготовления изделия"""
+class ManufacturingPlan(models.Model):
+    """Модель описывает производственный план"""
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=100, unique=True)
+    products = models.ManyToManyField(
+        'Product',
+        through='MPProduct',
+        through_fields=('mp', 'product')
+    )
+    assemblies = models.ManyToManyField(
+        'Assembly',
+        through='MPAssembly',
+        through_fields=('mp', 'assembly')
+    )
+    details = models.ManyToManyField(
+        Detail,
+        through='MPDetail',
+        through_fields=('mp', 'detail')
+    )
+    labors = models.ManyToManyField(
+        'Labor',
+        through='MPLabor',
+        through_fields=('mp', 'labor')
+    )
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('plan_detail',
+                       kwargs={"manufacturingplan_id": self.id})
+
+    class Meta:
+        ordering = ('name',)
+
+
+class MPProduct(models.Model):
+    """Модель описывает изделия производственного плана"""
+    mp = models.ForeignKey('ManufacturingPlan', on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True)
+    amount = models.PositiveIntegerField(default=0)
+
+
+class MPAssembly(models.Model):
+    """Модель описывает узлы производственного плана"""
+    mp = models.ForeignKey('ManufacturingPlan', on_delete=models.SET_NULL, null=True)
+    assembly = models.ForeignKey('Assembly', on_delete=models.SET_NULL, null=True)
+    amount = models.PositiveIntegerField(default=0)
+
+
+class MPDetail(models.Model):
+    """Модель описывает детали производственного плана"""
+    mp = models.ForeignKey('ManufacturingPlan', on_delete=models.SET_NULL, null=True)
+    detail = models.ForeignKey('Detail', on_delete=models.SET_NULL, null=True)
+    amount = models.PositiveIntegerField(default=0)
+
+
+class MPLabor(models.Model):
+    """Модель описывает доп. трудозатраты производственного плана"""
+    mp = models.ForeignKey('ManufacturingPlan', on_delete=models.SET_NULL, null=True)
+    labor = models.ForeignKey('Labor', on_delete=models.SET_NULL, null=True)
+    time = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+
+    class Meta:
+        ordering = ('mp',)
+
+
+class MPResources(models.Model):
+    """Модель описывает ресурсы необходимые для выполнения производственного плана"""
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True)
     materials = models.ManyToManyField(
         'Material',
-        through='ProductResourcesMaterial',
-        through_fields=('product_resources', 'material')
+        through='MPResourcesMaterial',
+        through_fields=('mp_resources', 'material')
     )
     standard_details = models.ManyToManyField(
         'StandardDetail',
-        through='ProductResourcesStandardDetail',
-        through_fields=('product_resources', 'standard_detail')
+        through='MPResourcesStandardDetail',
+        through_fields=('mp_resources', 'standard_detail')
     )
     labors = models.ManyToManyField(
         'Labor',
-        through='ProductResourcesLabor',
-        through_fields=('product_resources', 'labor')
+        through='MPResourcesLabor',
+        through_fields=('mp_resources', 'labor')
     )
 
     def __str__(self):
         return self.name
 
 
-class ProductResourcesMaterial(models.Model):
-    """Модель описывает необходимый материал для изготовления изделия"""
-    product_resources = models.ForeignKey('ProductResources', on_delete=models.SET_NULL, null=True)
+class MPResourcesMaterial(models.Model):
+    """Модель описывает необходимый материал для выполнения производственного плана"""
+    mp_resources = models.ForeignKey('MPResources', on_delete=models.SET_NULL, null=True)
     material = models.ForeignKey('Material', on_delete=models.SET_NULL, null=True)
     amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 
@@ -236,9 +301,9 @@ class ProductResourcesMaterial(models.Model):
         ordering = ('material',)
 
 
-class ProductResourcesStandardDetail(models.Model):
-    """Модель описывает необходимые стандартные изделия для изготовления изделия"""
-    product_resources = models.ForeignKey('ProductResources', on_delete=models.SET_NULL, null=True)
+class MPResourcesStandardDetail(models.Model):
+    """Модель описывает необходимые стандартные изделия для выполнения производственного плана"""
+    mp_resources = models.ForeignKey('MPResources', on_delete=models.SET_NULL, null=True)
     standard_detail = models.ForeignKey('StandardDetail', on_delete=models.SET_NULL, null=True)
     amount = models.PositiveIntegerField(default=0)
 
@@ -246,31 +311,11 @@ class ProductResourcesStandardDetail(models.Model):
         ordering = ('standard_detail',)
 
 
-class ProductResourcesLabor(models.Model):
-    """Модель описывает необходимые трудозатраты для изготовления изделия"""
-    product_resources = models.ForeignKey('ProductResources', on_delete=models.SET_NULL, null=True)
+class MPResourcesLabor(models.Model):
+    """Модель описывает необходимые трудозатраты для выполнения производственного плана"""
+    mp_resources = models.ForeignKey('MPResources', on_delete=models.SET_NULL, null=True)
     labor = models.ForeignKey('Labor', on_delete=models.SET_NULL, null=True)
     time = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 
     class Meta:
         ordering = ('labor',)
-
-
-class ManufacturingPlan(models.Model):
-    """Модель описывает ресурсы необходимые для выполнения производственного плана"""
-    name = models.CharField(max_length=200)
-    product_resources = models.ManyToManyField(
-        'ProductResources',
-        through='ManufacturingPlanProductResources',
-        through_fields=('manufacturing_plan', 'product_resources',),
-    )
-
-    def __str__(self):
-        return self.name
-
-
-class ManufacturingPlanProductResources(models.Model):
-    """Модель описывает количество изделий в плане производства"""
-    manufacturing_plan = models.ForeignKey('ManufacturingPlan', on_delete=models.SET_NULL, null=True)
-    product_resources = models.ForeignKey('ProductResources', on_delete=models.SET_NULL, null=True)
-    amount = models.PositiveIntegerField(default=0)

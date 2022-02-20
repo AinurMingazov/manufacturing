@@ -3,15 +3,17 @@ from . import views
 
 
 urlpatterns = [
-    path("", views.product_list, name='product_list'),
-    path('product/<slug:product_slug>/', views.product_detail,
+    path("", views.plan_list, name='plan_list'),
+    path('plan/<slug:slug>/', views.mp_detail,
+         name='mp_detail'),
+    path('product/<int:id>/', views.product_detail,
          name='product_detail'),
-    path('product_count/<slug:product_slug>/', views.product_count,
-         name='product_count'),
-    path('<slug:assembly_slug>', views.assembly_detail,
+    path('assembly/<int:id>/', views.assembly_detail,
          name='assembly_detail'),
     path('detail/<int:id>/', views.detail_detail,
          name='detail_detail'),
-    path('write_plan/', views.write_plan,
-             name='write_plan'),
+    path('material/<int:id>/', views.material_detail,
+         name='material_detail'),
+    path('mp_resources_count/<slug:slug>/', views.mp_resources_count,
+         name='mp_resources_count'),
 ]

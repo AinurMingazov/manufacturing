@@ -1,0 +1,41 @@
+{% extends "cost/base.html" %}
+ 
+{% block title %}{{ material.name }}{% endblock %}
+ 
+{% block content %}
+<div id="main" class="product-list">
+  <h1>{{ material.name }}</h1>
+Изготавливаются детали: <br>
+ <table>
+   <tr><th>Наименование</th></tr>
+       {% for detail in detail_materials %}
+      <tr>
+        <td><a href="{% url 'detail_detail' detail.detail.id %}">{{ detail.detail.name }}</a></td>
+       </tr>
+    {% endfor %}
+
+    </table>
+
+<br><br><br>
+Применяется в изделиях: <br>
+ <table>
+   <tr><th>Наименование</th></tr>
+    {% for product in product_materials %}
+      <tr>
+        <td><a href="{% url 'product_detail' product.product.id %}">{{ product.product.name }}</a></td>
+       </tr>
+    {% endfor %}
+    </table>
+
+<br><br><br>
+Применяется в узлах: <br>
+ <table>
+   <tr><th>Наименование</th></tr>
+    {% for assembly in assembly_materials %}
+      <tr>
+        <td><a href="{% url 'assembly_detail' assembly.assembly.id %}">{{ assembly.assembly.name }}</a></td>
+       </tr>
+    {% endfor %}
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "cost/base.html" %}
+ 
+{% block title %}{{ man_plan.name }}{% endblock %}
+ 
+{% block content %}
+<div id="main" class="product-list">
+  <h1>{{ man_plan.name }}</h1>
+    Изделий: <br>
+ <table>
+   <tr><th>Наименование</th><th>Кол-во</th></tr>
+        {% for plan in man_plan_prod %}<tr>
+        <td>{{ plan.product_resources.name }}</td>
+        <td>{{ plan.amount }}</td>
+
+      </tr>{% endfor %}
+
+
+    </table>
+
+<br><br><br>
+Материалы: <br><br>
+ <table>
+   <tr><th>Наименование</th><th>Кол-во</th><th>Ед.изм.</th></tr>
+    {% for mat in plan_prm %}
+      <tr>
+        <td>{{ mat.material.name }}</a></td>
+        <td>{{ mat.amount }}</td>
+        <td>{{ mat.material.unit }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+   <br><br><br>
+Трудозатраты: <br><br>
+ <table>
+   <tr><th>Операция</th><th>Станок</th><th>Кол-во, час.</th></tr>
+    {% for lab in plan_prl %}
+      <tr>
+        <td>{{ lab.labor.name }}</td>
+        <td>{{ lab.labor.machine }}</td>
+        <td>{{ lab.time }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+    <br><br><br>
+Стандартные изделия: <br><br>
+ <table>
+   <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
+    {% for prod in plan_prsd %}
+      <tr>
+        <td>{{ prod.standard_detail.name }}</td>
+        <td>{{ prod.amount }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+ <br><hr><br><br>
+</div>
+{% endblock %}
