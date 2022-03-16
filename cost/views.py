@@ -279,8 +279,7 @@ def mp_detail(request, slug):
 
         for mplab in MPLabor.objects.filter(mp=mp):
             # print(prodmat.material.name + ' - ' + str(prodmat.amount))
-            count = mplab.time
-            temp_dict = dict.fromkeys([mplab.labor.id], count)
+            temp_dict = dict.fromkeys([mplab.labor.id], mplab.time)
             try:
                 dict_labor[mplab.labor.id] += temp_dict[mplab.labor.id]
             except KeyError:
