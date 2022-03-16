@@ -11,7 +11,7 @@
     {% for detail in assemblydetails %}
       <tr>
         <td><a href="{% url 'detail_detail' detail.detail.id %}">{{ detail.detail.name }}</a></td>
-        <td>{{ detail.amount_details }}</td>
+        <td>{{ detail.amount }}</td>
       </tr>
     {% endfor %}
     </table>
@@ -33,10 +33,22 @@
     {% for standarddetail in assemblystandarddetail %}
       <tr>
         <td>{{ standarddetail.standard_detail.name }}</td>
-        <td>{{ standarddetail.amount_standard_details }}</td>
+        <td>{{ standarddetail.amount }}</td>
+      </tr>
+    {% endfor %}
+    </table><br><br><br>
+    Материалы: <br>
+ <table>
+   <tr><th>Наименование</th><th>Кол-во</th><th>Ед. изм.</th></tr>
+       {% for material in assemblymaterials %}
+      <tr>
+        <td><a href="{% url 'material_detail' material.material.id %}">{{ material.material.name }}</a></td>
+        <td>{{ material.amount }}</td>
+        <td>{{ material.material.unit }}</td>
       </tr>
     {% endfor %}
     </table>
+
      <br><hr><br><br>
 </div>
 {% endblock %}

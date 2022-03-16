@@ -8,11 +8,13 @@
 Материал: <br>
  <table>
    <tr><th>Наименование</th><th>Кол-во</th><th>Ед. изм.</th></tr>
+       {% for detail in detail_materials %}
       <tr>
-        <td>{{ detail.material }}</td>
-        <td>{{ detail.amount  }}</td>
-        <td>{{ detail.unit  }}</td>
+        <td><a href="{% url 'material_detail' detail.material.id %}">{{ detail.material.name }}</a></td>
+        <td>{{ detail.amount }}</td>
+        <td>{{ detail.material.unit }}</td>
       </tr>
+    {% endfor %}
 
     </table>
 

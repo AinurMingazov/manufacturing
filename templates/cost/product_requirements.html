@@ -1,0 +1,79 @@
+{% extends "cost/base.html" %}
+ 
+{% block title %}{{ product.name }}{% endblock %}
+ 
+{% block content %}
+<div id="main" class="product-list">
+  <h1>{{ product.name }}</h1>
+Весь материал:<br>
+     {% for assembly in productassemblies %}
+        {{ assembly.assembly }}
+        {{ assembly.amount_assemblies }}
+        {{ assembly.details.amount }}<br>
+
+    <table>
+    <tr><th>Наименование</th><th>Кол-во</th><th>Ед. изм.</th></tr>
+            {% for detail in assembly.assembly.details.all %}
+          <tr>
+            <td>{{ detail.material }}</td>
+            <td>{{ detail.amount}} * {{ assembly.details.assembly.amount_details }} * {{assembly.amount_assemblies }}</td>
+            <td>{{ detail.unit  }}</td>
+          </tr>
+            {% endfor %}
+    </table>
+
+<table>
+   <tr><th>Операция</th><th>Кол-во, час.</th></tr>
+
+      <tr>
+      <tr>
+        <td>{{ detail.labor }}</td>
+        <td>{{ detail.time }}</td>
+      </tr>
+      </tr>
+    {% endfor %}
+    </table>
+
+Детали:<br>
+     <table>
+   <tr><th>Наименование</th><th>Кол-во</th><th>Ед. изм.</th></tr>
+    {% for detail in productdetails %}
+        {{ detail.detail.name }}
+        {{ detail.amount_details }}<br>
+
+      <tr>
+            <td>{{ detail.detail.material }}</td>
+            <td>{{ detail.detail.amount}} * {{ detail.amount_details }}</td>
+            <td>{{ detail.detail.unit  }}</td>
+          </tr>
+    {% endfor %}
+    </table>
+   <br><br><br>
+Трудозатраты: <br><br>
+ <table>
+   <tr><th>Операция</th><th>Кол-во, час.</th></tr>
+    {% for product in productlabor %}
+      <tr>
+        <td>{{ product.labor.name }}</td>
+        <td>{{ product.time }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+    <br><br><br>
+Стандартные изделия: <br><br>
+ <table>
+   <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
+    {% for product in productstandarddetail %}
+      <tr>
+        <td>{{ product.standard_detail.name }}</td>
+        <td>{{ product.amount_standard_details }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+ <br><hr><br><br>
+</div>
+<form action="" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Submit" />
+    </form>
+{% endblock %}

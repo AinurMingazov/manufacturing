@@ -1,13 +1,24 @@
 {% extends "cost/base.html" %}
-{% block title %}{{ product.name }}{% endblock %}
+{% block title %}{{ mp.name }}{% endblock %}
 {% block content %}
 <div id="main" class="product-list">
-  <h2>{{ product.name }}</h2><br>
-    <br>
+  <h2>{{ mp.name }}</h2><br>
+    <a href="{% url 'mp_resources_count' mp.slug %}">Подробный расчет всех затрат по плану производства</a><br><br>
+Изделия: <br>
+<table>
+   <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
+    {% for product in mpproducts %}
+      <tr>
+        <td><a href="{% url 'product_detail' product.product.id %}">{{ product.product.name }}</a></td>
+        <td>{{ product.amount }}</td>
+      </tr>
+    {% endfor %}
+</table>
+   <br><br>
 Сборочные единицы: <br>
 <table>
    <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
-    {% for assembly in productassemblies %}
+    {% for assembly in mpassemblies %}
       <tr>
         <td><a href="{% url 'assembly_detail' assembly.assembly.id %}">{{ assembly.assembly.name }}</a></td>
         <td>{{ assembly.amount }}</td>
@@ -15,10 +26,11 @@
     {% endfor %}
 </table>
    <br><br>
+
 Детали: <br>
 <table>
    <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
-    {% for detail in productdetails %}
+    {% for detail in mpdetails %}
       <tr>
         <td><a href="{% url 'detail_detail' detail.detail.id %}">{{ detail.detail.name }}</a></td>
         <td>{{ detail.amount }}</td>
@@ -29,35 +41,13 @@
 Трудозатраты: <br>
 <table>
    <tr><th>Операция</th><th>Кол-во, час.</th></tr>
-    {% for product in productlabor %}
+    {% for product in mplabor %}
       <tr>
         <td>{{ product.labor.name }}</td>
         <td>{{ product.time }}</td>
       </tr>
     {% endfor %}
 </table>
-    <br><br>
-Стандартные изделия: <br>
-<table>
-   <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
-    {% for product in productstandarddetail %}
-      <tr>
-        <td>{{ product.standard_detail.name }}</td>
-        <td>{{ product.amount }}</td>
-      </tr>
-    {% endfor %}
-</table><br><br><br>
-    Материалы: <br>
- <table>
-   <tr><th>Наименование</th><th>Кол-во</th><th>Ед. изм.</th></tr>
-       {% for material in productmaterials %}
-      <tr>
-        <td><a href="{% url 'material_detail' material.material.id %}">{{ material.material.name }}</a></td>
-        <td>{{ material.amount }}</td>
-        <td>{{ material.material.unit }}</td>
-      </tr>
-    {% endfor %}
-    </table>
     <br><hr><br>
 </div>
 <form action="" method="post">

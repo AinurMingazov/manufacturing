@@ -1,0 +1,45 @@
+{% extends "cost/base.html" %}
+ 
+{% block title %}{{ prodres.name }}{% endblock %}
+ 
+{% block content %}
+<div id="main" class="product-list">
+  <h2>{{ prodres.name }}</h2><br>
+Материалы: <br><br>
+ <table>
+   <tr><th>Наименование</th><th>Кол-во</th><th>Ед.изм.</th></tr>
+    {% for mat in prm %}
+      <tr>
+        <td>{{ mat.material.name }}</a></td>
+        <td>{{ mat.amount }}</td>
+        <td>{{ mat.material.unit }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+   <br><br><br>
+Трудозатраты: <br><br>
+ <table>
+   <tr><th>Операция</th><th>Станок</th><th>Кол-во, час.</th></tr>
+    {% for lab in prl %}
+      <tr>
+        <td>{{ lab.labor.name }}</td>
+        <td>{{ lab.labor.machine }}</td>
+        <td>{{ lab.time }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+    <br><br><br>
+Стандартные изделия: <br><br>
+ <table>
+   <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
+    {% for prod in prsd %}
+      <tr>
+        <td>{{ prod.standard_detail.name }}</td>
+        <td>{{ prod.amount }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+ <br><hr><br><br>
+</div>
+
+{% endblock %}
