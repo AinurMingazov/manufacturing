@@ -1,0 +1,31 @@
+version: "3.3"
+services:
+  db :
+    image: postgres
+    volumes:
+      - data:/varlib/postgresql/data
+    env_file:
+      - ./.env
+#    environment:
+#      - POSTGRES_DB=postgres
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=postgres
+    networks:
+      - heritage-network
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/manufacturing
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - heritage-network
+
+networks:
+  heritage-network:
+    driver: bridge
+volumes:
+  data:
