@@ -6,15 +6,13 @@ services:
       - data:/varlib/postgresql/data
     env_file:
       - ./.env
-#    environment:
-#      - POSTGRES_DB=postgres
-#      - POSTGRES_USER=postgres
-#      - POSTGRES_PASSWORD=postgres
+
     networks:
-      - heritage-network
+      - engineer-network
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
+#    command: gunicorn manufacturing.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/manufacturing
     ports:
@@ -22,10 +20,19 @@ services:
     depends_on:
       - db
     networks:
-      - heritage-network
+      - engineer-network
+#  nginx:
+#    build: ./nginx
+#    ports:
+#      - "80:80"
+#    depends_on:
+#      - web
+#      - db
+#    networks:
+#      - engineer-network
 
 networks:
-  heritage-network:
+  engineer-network:
     driver: bridge
 volumes:
   data:
