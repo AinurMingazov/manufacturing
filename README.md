@@ -24,7 +24,7 @@
 Необходимо склонировать приложение. Создать виртуальное окружение.
 Переименовать **.env-sample** в **.env**
 Выполнить:
-```Python
+```
 pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
@@ -32,16 +32,5 @@ python createsuperuser # создать суперюзера
 python manage.py runserver
 ```
 Дальнейшая работа выполняется в админке.
-Есть возможность импортировать: материалы, операции, стандартные изделия из документов
-Excel. 
-
-Для этого нужно: 
-- раскомментировать STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-- закоментировать STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
-```Python
-python manage.py collectstatic
-```
-- закоментировать STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-- раскомментировать STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
-
-
+Есть возможность импортировать: материалы, операции, стандартные изделия из документа
+Excel. Кнопка импорт в админке.

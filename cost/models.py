@@ -90,6 +90,9 @@ class Assembly(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('assembly_detail',
+                       kwargs={"id": self.id})
     class Meta:
         ordering = ('name',)
 
@@ -156,7 +159,7 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product_detail',
-                       kwargs={"product_slug": self.slug})
+                       kwargs={"id": self.id})
 
     class Meta:
         ordering = ('name',)
