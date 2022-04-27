@@ -10,6 +10,10 @@ class Material(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'Материал'
+        verbose_name_plural = 'Материалы'
+
 
 class Labor(models.Model):
     """Модель описывает операции детали"""
@@ -19,13 +23,22 @@ class Labor(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'Трудоемкость'
+        verbose_name_plural = 'Трудоемкость'
+
 
 class StandardDetail(models.Model):
     """Модель описывает стандартные детали"""
     name = models.CharField(max_length=100)
+    unit = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = 'Стандартное изделие'
+        verbose_name_plural = 'Стандартные изделия'
 
 
 class Detail(models.Model):
@@ -47,6 +60,8 @@ class Detail(models.Model):
 
     class Meta:
         ordering = ('name',)
+        verbose_name = 'Деталь'
+        verbose_name_plural = 'Детали'
 
 
 class DetailLabor(models.Model):
@@ -93,8 +108,11 @@ class Assembly(models.Model):
     def get_absolute_url(self):
         return reverse('assembly_detail',
                        kwargs={"id": self.id})
+
     class Meta:
         ordering = ('name',)
+        verbose_name = 'Сборочная единица'
+        verbose_name_plural = 'Сборочные единицы'
 
 
 class AssemblyMaterial(models.Model):
@@ -115,7 +133,7 @@ class AssemblyStandardDetail(models.Model):
     """Модель описывает стандартные изделия узла"""
     assembly = models.ForeignKey('Assembly', on_delete=models.SET_NULL, null=True)
     standard_detail = models.ForeignKey('StandardDetail', on_delete=models.SET_NULL, null=True)
-    amount = models.PositiveIntegerField(default=0)
+    amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 
 
 class AssemblyLabor(models.Model):
@@ -163,6 +181,8 @@ class Product(models.Model):
 
     class Meta:
         ordering = ('name',)
+        verbose_name = 'Изделие'
+        verbose_name_plural = 'Изделия'
 
 
 class ProductMaterial(models.Model):
@@ -190,7 +210,7 @@ class ProductStandardDetail(models.Model):
     """Модель описывает стандартные изделия в изделии"""
     product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True)
     standard_detail = models.ForeignKey('StandardDetail', on_delete=models.SET_NULL, null=True)
-    amount = models.PositiveIntegerField(default=0)
+    amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 
 
 class ProductLabor(models.Model):
@@ -237,6 +257,8 @@ class ManufacturingPlan(models.Model):
 
     class Meta:
         ordering = ('name',)
+        verbose_name = 'План производства'
+        verbose_name_plural = 'Планы производства'
 
 
 class MPProduct(models.Model):
@@ -293,6 +315,10 @@ class MPResources(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'Ресурсы плана производства'
+        verbose_name_plural = 'Ресурсы планов производства'
+
 
 class MPResourcesMaterial(models.Model):
     """Модель описывает необходимый материал для выполнения производственного плана"""
@@ -308,7 +334,7 @@ class MPResourcesStandardDetail(models.Model):
     """Модель описывает необходимые стандартные изделия для выполнения производственного плана"""
     mp_resources = models.ForeignKey('MPResources', on_delete=models.SET_NULL, null=True)
     standard_detail = models.ForeignKey('StandardDetail', on_delete=models.SET_NULL, null=True)
-    amount = models.PositiveIntegerField(default=0)
+    amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 
     class Meta:
         ordering = ('standard_detail',)

@@ -1,7 +1,5 @@
 from django.contrib import admin
-
-from cost.models import Detail, Product, StandardDetail, Labor, Assembly, Material, ManufacturingPlan, \
-    DetailLabor, DetailMaterial, MPResources
+from cost.models import *
 from import_export.admin import ImportExportActionModelAdmin
 from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget

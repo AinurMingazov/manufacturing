@@ -32,11 +32,12 @@
 
 Стандартные изделия: <br><br>
  <table>
-   <tr><th>Наименование</th><th>Кол-во, шт.</th></tr>
+   <tr><th>Наименование</th><th>Кол-во</th><th>Ед.изм.</th></tr>
     {% for prod in mprsd %}
       <tr>
         <td>{{ prod.standard_detail.name }}</td>
         <td>{{ prod.amount }}</td>
+        <td>{{ prod.standard_detail.unit }}</td>
       </tr>
     {% endfor %}
     </table>
