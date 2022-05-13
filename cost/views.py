@@ -267,40 +267,36 @@ def mp_detail(request, slug):
                             dict_labor[assemblydetlab.labor.id] += temp_dict[assemblydetlab.labor.id]
                         except KeyError:
                             dict_labor[assemblydetlab.labor.id] = temp_dict[assemblydetlab.labor.id]
-                for material in assembly.assembly.materials.all():
-                    # print(material)
-                    # перебираем материалы в узле
-                    for assemblymaterial in AssemblyMaterial.objects.filter(material_id=material.id).filter(assembly_id=assembly.id):
-                        # print(assemblymaterial.material)
-                        # перебираем отношения материалов в узле
-                        count = assemblymaterial.amount * assembly.amount
-                        temp_dict = dict.fromkeys([assemblymaterial.material.id], count)
-                        try:
-                            dict_material[assemblymaterial.material.id] += temp_dict[assemblymaterial.material.id]
-                        except KeyError:
-                            dict_material[assemblymaterial.material.id] = temp_dict[assemblymaterial.material.id]
-                for standetail in assembly.assembly.standard_details.all():
-                    # перебираем стандартные изделия в узле
-                    for assemstanddet in AssemblyStandardDetail.objects.filter(standard_detail_id=standetail.id)\
-                            .filter(assembly_id=assembly.id):
-                        # перебираем модель отношения стандартных изделий в узле, для возможности обратиться
-                        # к количеству стандартных изделий в узле
-                        count = assemstanddet.amount * assembly.amount
-                        # print(assemstanddet.standard_detail.name + ' - ' + str(assemstanddet.amount)
-                        #       + ' * ' + str(assemstanddet.amount)
-                        #       + ' * ' + str(assembly.amount)
-                        #       + ' * ' + str(product.amount)
-                        #       + ' = ' + str(count))
-                        temp_dict = dict.fromkeys([assemstanddet.standard_detail.id], count)
-                        try:
-                            dict_stand[assemstanddet.standard_detail.id] += temp_dict[assemstanddet.standard_detail.id]
-                        except KeyError:
-                            dict_stand[assemstanddet.standard_detail.id] = temp_dict[assemstanddet.standard_detail.id]
-                        # print(dict_stand)
-
-
-
-
+            for material in assembly.assembly.materials.all():
+                # print(material)
+                # перебираем материалы в узле
+                for assemblymaterial in AssemblyMaterial.objects.filter(material_id=material.id).filter(assembly_id=assembly.id):
+                    # print(assemblymaterial.material)
+                    # перебираем отношения материалов в узле
+                    count = assemblymaterial.amount * assembly.amount
+                    temp_dict = dict.fromkeys([assemblymaterial.material.id], count)
+                    try:
+                        dict_material[assemblymaterial.material.id] += temp_dict[assemblymaterial.material.id]
+                    except KeyError:
+                        dict_material[assemblymaterial.material.id] = temp_dict[assemblymaterial.material.id]
+            for standetail in assembly.assembly.standard_details.all():
+                # перебираем стандартные изделия в узле
+                for assemstanddet in AssemblyStandardDetail.objects.filter(standard_detail_id=standetail.id)\
+                        .filter(assembly_id=assembly.id):
+                    # перебираем модель отношения стандартных изделий в узле, для возможности обратиться
+                    # к количеству стандартных изделий в узле
+                    count = assemstanddet.amount * assembly.amount
+                    # print(assemstanddet.standard_detail.name + ' - ' + str(assemstanddet.amount)
+                    #       + ' * ' + str(assemstanddet.amount)
+                    #       + ' * ' + str(assembly.amount)
+                    #       + ' * ' + str(product.amount)
+                    #       + ' = ' + str(count))
+                    temp_dict = dict.fromkeys([assemstanddet.standard_detail.id], count)
+                    try:
+                        dict_stand[assemstanddet.standard_detail.id] += temp_dict[assemstanddet.standard_detail.id]
+                    except KeyError:
+                        dict_stand[assemstanddet.standard_detail.id] = temp_dict[assemstanddet.standard_detail.id]
+                    # print(dict_stand)
 
         for mpdetail in MPDetail.objects.filter(mp=mp):
             # перебираем детали в изделии
