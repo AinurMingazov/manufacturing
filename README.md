@@ -28,7 +28,7 @@
 pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
-python createsuperuser # создать суперюзера
+python manage.py createsuperuser # создать суперюзера
 python manage.py runserver
 ```
 Дальнейшая работа выполняется в админке.
