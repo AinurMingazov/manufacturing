@@ -82,11 +82,13 @@ class MaterialResource(resources.ModelResource):
         model = Material
         fields = ('id', 'name', 'unit',)
         list_filter = ['name', ]
+        search_fields = ['name', ]
 
 
 class MaterialAdmin(ImportExportActionModelAdmin):
     resource_class = MaterialResource
     list_display = [field.name for field in Material._meta.fields if field.name != "id"]
+    search_fields = ['name', ]
 
 
 admin.site.register(Material, MaterialAdmin)
@@ -110,9 +112,9 @@ admin.site.register(Labor, LaborAdmin)
 class StandardDetailResource(resources.ModelResource):
     class Meta:
         model = StandardDetail
-        fields = ('id', 'name',)
+        fields = ('id', 'name','unit',)
         list_filter = ['name', ]
-
+        search_fields = ['name', ]
 
 class StandardDetailAdmin(ImportExportActionModelAdmin):
     resource_class = StandardDetailResource
@@ -129,6 +131,7 @@ class DetailResource(resources.ModelResource):
             (None, {'fields': ['id', 'name', ]})
         ]
         list_filter = ['name', ]
+        search_fields = ['name', ]
         inlines = (DetailLaborInlineAdmin, DetailMaterialInlineAdmin)
 
 
@@ -136,7 +139,8 @@ class DetailAdmin(ImportExportActionModelAdmin):
     resource_class = DetailResource
     list_display = [field.name for field in Detail._meta.fields if field.name != "id"]
     inlines = (DetailLaborInlineAdmin, DetailMaterialInlineAdmin)
-
+    search_fields = ['name', ]
+    autocomplete_fields = ['materials']
 
 admin.site.register(Detail, DetailAdmin)
 

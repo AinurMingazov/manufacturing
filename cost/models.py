@@ -11,6 +11,7 @@ class Material(models.Model):
         return self.name
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'Материал'
         verbose_name_plural = 'Материалы'
 
@@ -21,9 +22,10 @@ class Labor(models.Model):
     machine = models.CharField(max_length=60, null=True)
 
     def __str__(self):
-        return self.name
+        return self.machine
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'Трудоемкость'
         verbose_name_plural = 'Трудоемкость'
 
@@ -37,6 +39,7 @@ class StandardDetail(models.Model):
         return self.name
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'Стандартное изделие'
         verbose_name_plural = 'Стандартные изделия'
 
@@ -68,15 +71,19 @@ class DetailLabor(models.Model):
     """Модель описывает трудозатраты на изготовления детали"""
     detail = models.ForeignKey('Detail', on_delete=models.SET_NULL, null=True)
     labor = models.ForeignKey('Labor', on_delete=models.SET_NULL, null=True)
-    time = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    time = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
 
+    class Meta:
+        ordering = ('labor',)
 
 class DetailMaterial(models.Model):
     """Модель описывает необходимый материал для изготовления детали"""
     detail = models.ForeignKey('Detail', on_delete=models.SET_NULL, null=True)
     material = models.ForeignKey('Material', on_delete=models.SET_NULL, null=True)
-    amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
 
+    class Meta:
+        ordering = ('material',)
 
 class Assembly(models.Model):
     """Модель описывает узел"""
@@ -119,7 +126,10 @@ class AssemblyMaterial(models.Model):
     """Модель описывает материалы узла"""
     assembly = models.ForeignKey('Assembly', on_delete=models.SET_NULL, null=True)
     material = models.ForeignKey('Material', on_delete=models.SET_NULL, null=True)
-    amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+
+    class Meta:
+        ordering = ('material',)
 
 
 class AssemblyDetail(models.Model):
@@ -128,20 +138,28 @@ class AssemblyDetail(models.Model):
     detail = models.ForeignKey('Detail', on_delete=models.SET_NULL, null=True)
     amount = models.PositiveIntegerField(default=0)
 
+    class Meta:
+        ordering = ('detail',)
+
 
 class AssemblyStandardDetail(models.Model):
     """Модель описывает стандартные изделия узла"""
     assembly = models.ForeignKey('Assembly', on_delete=models.SET_NULL, null=True)
     standard_detail = models.ForeignKey('StandardDetail', on_delete=models.SET_NULL, null=True)
-    amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+
+    class Meta:
+        ordering = ('standard_detail',)
 
 
 class AssemblyLabor(models.Model):
     """Модель описывает трудозатраты на изготовления узла"""
     assembly = models.ForeignKey('Assembly', on_delete=models.SET_NULL, null=True)
     labor = models.ForeignKey('Labor', on_delete=models.SET_NULL, null=True)
-    time = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    time = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
 
+    class Meta:
+        ordering = ('labor',)
 
 class Product(models.Model):
     """Модель описывает изделия"""
@@ -189,8 +207,10 @@ class ProductMaterial(models.Model):
     """Модель описывает материалы узла"""
     product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True)
     material = models.ForeignKey('Material', on_delete=models.SET_NULL, null=True)
-    amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
 
+    class Meta:
+        ordering = ('material',)
 
 class ProductAssembly(models.Model):
     """Модель описывает узлы изделия"""
@@ -198,6 +218,8 @@ class ProductAssembly(models.Model):
     product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True)
     amount = models.PositiveIntegerField(default=0)
 
+    class Meta:
+        ordering = ('assembly',)
 
 class ProductDetail(models.Model):
     """Модель описывает детали изделия"""
@@ -205,22 +227,26 @@ class ProductDetail(models.Model):
     detail = models.ForeignKey('Detail', on_delete=models.SET_NULL, null=True)
     amount = models.PositiveIntegerField(default=0)
 
+    class Meta:
+        ordering = ('detail',)
 
 class ProductStandardDetail(models.Model):
     """Модель описывает стандартные изделия в изделии"""
     product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True)
     standard_detail = models.ForeignKey('StandardDetail', on_delete=models.SET_NULL, null=True)
-    amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
 
+    class Meta:
+        ordering = ('standard_detail',)
 
 class ProductLabor(models.Model):
     """Модель описывает трудозатраты на изготовление изделия"""
     labor = models.ForeignKey('Labor', on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True)
-    time = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    time = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
 
     class Meta:
-        ordering = ('product',)
+        ordering = ('labor',)
 
 
 class ManufacturingPlan(models.Model):
@@ -286,7 +312,7 @@ class MPLabor(models.Model):
     """Модель описывает доп. трудозатраты производственного плана"""
     mp = models.ForeignKey('ManufacturingPlan', on_delete=models.SET_NULL, null=True)
     labor = models.ForeignKey('Labor', on_delete=models.SET_NULL, null=True)
-    time = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    time = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
 
     class Meta:
         ordering = ('mp',)
@@ -316,6 +342,7 @@ class MPResources(models.Model):
         return self.name
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'Ресурсы плана производства'
         verbose_name_plural = 'Ресурсы планов производства'
 
@@ -324,7 +351,7 @@ class MPResourcesMaterial(models.Model):
     """Модель описывает необходимый материал для выполнения производственного плана"""
     mp_resources = models.ForeignKey('MPResources', on_delete=models.SET_NULL, null=True)
     material = models.ForeignKey('Material', on_delete=models.SET_NULL, null=True)
-    amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
 
     class Meta:
         ordering = ('material',)
@@ -334,7 +361,7 @@ class MPResourcesStandardDetail(models.Model):
     """Модель описывает необходимые стандартные изделия для выполнения производственного плана"""
     mp_resources = models.ForeignKey('MPResources', on_delete=models.SET_NULL, null=True)
     standard_detail = models.ForeignKey('StandardDetail', on_delete=models.SET_NULL, null=True)
-    amount = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
 
     class Meta:
         ordering = ('standard_detail',)
@@ -344,7 +371,7 @@ class MPResourcesLabor(models.Model):
     """Модель описывает необходимые трудозатраты для выполнения производственного плана"""
     mp_resources = models.ForeignKey('MPResources', on_delete=models.SET_NULL, null=True)
     labor = models.ForeignKey('Labor', on_delete=models.SET_NULL, null=True)
-    time = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    time = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
 
     class Meta:
         ordering = ('labor',)

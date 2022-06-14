@@ -116,7 +116,7 @@ def mp_detail(request, slug):
                 for detail in assembly.assembly.details.all():
                     # print(detail)
                     # перебираем детали в узле
-                    for assemblydetail in AssemblyDetail.objects.filter(detail_id=detail.id).filter(assembly_id=assembly.id):
+                    for assemblydetail in AssemblyDetail.objects.filter(detail_id=detail.id).filter(assembly_id=assembly.assembly.id):
                         # print(assemblydetail.detail)
                         # перебираем модель отношения деталей в узле, для возможности обратиться к количеству деталей в узле
                         for det in DetailMaterial.objects.filter(detail_id=detail.id):
@@ -156,8 +156,9 @@ def mp_detail(request, slug):
                 for material in assembly.assembly.materials.all():
                     # print(material)
                     # перебираем материалы в узле
-                    for assemblymaterial in AssemblyMaterial.objects.filter(material_id=material.id).filter(assembly_id=assembly.id):
-                        # print(assemblymaterial.material)
+                    # am = AssemblyMaterial.objects.filter(material_id=material.id)
+                    for assemblymaterial in AssemblyMaterial.objects.filter(assembly_id=assembly.assembly.id):
+                        print(assemblymaterial.material)
                         # перебираем отношения материалов в узле
                         count = assemblymaterial.amount * assembly.amount * product.amount
                         temp_dict = dict.fromkeys([assemblymaterial.material.id], count)
@@ -169,8 +170,8 @@ def mp_detail(request, slug):
 
                 for standetail in assembly.assembly.standard_details.all():
                     # перебираем стандартные изделия в узле
-                    for assemstanddet in AssemblyStandardDetail.objects.filter(standard_detail_id=standetail.id)\
-                            .filter(assembly_id=assembly.id):
+                    # asd = AssemblyStandardDetail.objects.filter(standard_detail_id=standetail.id)
+                    for assemstanddet in AssemblyStandardDetail.objects.filter(assembly_id=assembly.assembly.id).filter(standard_detail_id=standetail.id):
                         # перебираем модель отношения стандартных изделий в узле, для возможности обратиться
                         # к количеству стандартных изделий в узле
                         count = assemstanddet.amount * assembly.amount * product.amount
@@ -241,8 +242,9 @@ def mp_detail(request, slug):
             # перебираем узлы в плане
             for detail in assembly.assembly.details.all():
                 # перебираем детали в узле
-                for assemblydetail in AssemblyDetail.objects.filter(detail_id=detail.id).filter(
-                        assembly_id=assembly.id):
+                # ad1 = AssemblyDetail.objects.filter(detail_id=detail.id)
+                # print(ad1)
+                for assemblydetail in AssemblyDetail.objects.filter(assembly_id=assembly.assembly.id).filter(detail_id=detail.id):
                     # перебираем модель отношения деталей в узле, для возможности обратиться к количеству деталей в узле
                     for det in DetailMaterial.objects.filter(detail_id=detail.id):
                         # перебираем модель отношение материалов в деталях, для возможности обратиться к количеству
@@ -267,11 +269,16 @@ def mp_detail(request, slug):
                             dict_labor[assemblydetlab.labor.id] += temp_dict[assemblydetlab.labor.id]
                         except KeyError:
                             dict_labor[assemblydetlab.labor.id] = temp_dict[assemblydetlab.labor.id]
+
             for material in assembly.assembly.materials.all():
                 # print(material)
+                # print(assembly.assembly.materials.all())
                 # перебираем материалы в узле
-                for assemblymaterial in AssemblyMaterial.objects.filter(material_id=material.id).filter(assembly_id=assembly.id):
+                # print(AssemblyMaterial.objects.filter(material_id=material.id, assembly_id=assembly.id))
+                # am1 = AssemblyMaterial.objects.filter(material_id=material.id)
+                for assemblymaterial in AssemblyMaterial.objects.filter(material_id=material.id).filter(assembly_id=assembly.assembly.id):
                     # print(assemblymaterial.material)
+                    # print(assemblymaterial.amount)
                     # перебираем отношения материалов в узле
                     count = assemblymaterial.amount * assembly.amount
                     temp_dict = dict.fromkeys([assemblymaterial.material.id], count)
@@ -281,8 +288,8 @@ def mp_detail(request, slug):
                         dict_material[assemblymaterial.material.id] = temp_dict[assemblymaterial.material.id]
             for standetail in assembly.assembly.standard_details.all():
                 # перебираем стандартные изделия в узле
-                for assemstanddet in AssemblyStandardDetail.objects.filter(standard_detail_id=standetail.id)\
-                        .filter(assembly_id=assembly.id):
+                # asd1 = AssemblyStandardDetail.objects.filter(standard_detail_id=standetail.id)
+                for assemstanddet in AssemblyStandardDetail.objects.filter(assembly_id=assembly.assembly.id).filter(standard_detail_id=standetail.id):
                     # перебираем модель отношения стандартных изделий в узле, для возможности обратиться
                     # к количеству стандартных изделий в узле
                     count = assemstanddet.amount * assembly.amount
