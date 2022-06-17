@@ -76,6 +76,7 @@ class DetailLabor(models.Model):
     class Meta:
         ordering = ('labor',)
 
+
 class DetailMaterial(models.Model):
     """Модель описывает необходимый материал для изготовления детали"""
     detail = models.ForeignKey('Detail', on_delete=models.SET_NULL, null=True)
@@ -84,6 +85,7 @@ class DetailMaterial(models.Model):
 
     class Meta:
         ordering = ('material',)
+
 
 class Assembly(models.Model):
     """Модель описывает узел"""
@@ -161,6 +163,7 @@ class AssemblyLabor(models.Model):
     class Meta:
         ordering = ('labor',)
 
+
 class Product(models.Model):
     """Модель описывает изделия"""
     name = models.CharField(max_length=100)
@@ -212,6 +215,7 @@ class ProductMaterial(models.Model):
     class Meta:
         ordering = ('material',)
 
+
 class ProductAssembly(models.Model):
     """Модель описывает узлы изделия"""
     assembly = models.ForeignKey('Assembly', on_delete=models.SET_NULL, null=True)
@@ -220,6 +224,7 @@ class ProductAssembly(models.Model):
 
     class Meta:
         ordering = ('assembly',)
+
 
 class ProductDetail(models.Model):
     """Модель описывает детали изделия"""
@@ -230,6 +235,7 @@ class ProductDetail(models.Model):
     class Meta:
         ordering = ('detail',)
 
+
 class ProductStandardDetail(models.Model):
     """Модель описывает стандартные изделия в изделии"""
     product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True)
@@ -238,6 +244,7 @@ class ProductStandardDetail(models.Model):
 
     class Meta:
         ordering = ('standard_detail',)
+
 
 class ProductLabor(models.Model):
     """Модель описывает трудозатраты на изготовление изделия"""
