@@ -7,42 +7,67 @@ from cost.models import Product, ProductDetail, ProductStandardDetail, Detail, D
     MPAssembly, MPLabor, MPDetail, Material, AssemblyMaterial
 
 
+def _add_material_to_dict_material(temp_dict, dict_material):
+    """Добавляет материал в словарь dict_material"""
+    for i in temp_dict.keys():
+        if i in dict_material.keys():
+            dict_material[i] += temp_dict[i]
+        else:
+            dict_material[i] = temp_dict[i]
+    return dict_material
+
+
+def _add_standard_detail_to_dict_stand(temp_dict, dict_stand):
+    """Добавляет стандартное изделие в словарь dict_stand"""
+    for i in temp_dict.keys():
+        if i in dict_stand.keys():
+            dict_stand[i] += temp_dict[i]
+        else:
+            dict_stand[i] = temp_dict[i]
+    return dict_stand
+
+
+def _add_labor_to_dict_labor(temp_dict, dict_labor):
+    """Добавляет трудовые затраты в словарь dict_labor"""
+    for i in temp_dict.keys():
+        if i in dict_labor.keys():
+            dict_labor[i] += temp_dict[i]
+        else:
+            dict_labor[i] = temp_dict[i]
+    return dict_labor
+
+
 def _get_manuf_plan_resources(slug):
     mp = get_object_or_404(ManufacturingPlan, slug=slug)
     dict_material = dict()
     dict_labor = dict()
     dict_stand = dict()
-    for product in MPProduct.objects.filter(mp=mp):
-        # перебираем детали в плане
-        # print(product.id)
-        # print(ProductAssembly.objects.filter(product=product))
-        for assembly in ProductAssembly.objects.filter(product_id=product.product.id):
-            # print(assembly)
-            # перебираем узлы в изделии
-            for detail in assembly.assembly.details.all():
-                # print(detail)
-                # перебираем детали в узле
+    for product in MPProduct.objects.filter(mp=mp):  # перебираем изделия в плане
+
+        for assembly in ProductAssembly.objects.filter(product_id=product.product.id):  # перебираем узлы в изделии
+
+            for detail in assembly.assembly.details.all():  # перебираем детали в узле
+
                 for assemblydetail in AssemblyDetail.objects.filter(detail_id=detail.id).filter(
                         assembly_id=assembly.assembly.id):
-                    # print(assemblydetail.detail)
                     # перебираем модель отношения деталей в узле, для возможности обратиться к количеству деталей в узле
                     for det in DetailMaterial.objects.filter(detail_id=detail.id):
-                        # print(det.material.name)
-                        # перебираем модель отношение материалов в деталях, для возможности обратиться к количеству
-                        # материалов в детали
+
+                    # перебираем модель отношение материалов в деталях, для возможности обратиться к весу
+                    # материалов в детали
+                                        
                         count = det.amount * assemblydetail.amount * assembly.amount * product.amount
                         # print(det.material.name + ' - ' + str(assemblydetail.amount)
                         #       + ' * ' + str(det.amount)
                         #       + ' * ' + str(assembly.amount)
                         #       + ' * ' + str(assembly.amount)
                         #       + ' = ' + str(count))
+
                         # соберем словарь ключ=(id материала) значение=(количество)
                         temp_dict = dict.fromkeys([det.material.id], count)
-                        try:
-                            dict_material[det.material.id] += temp_dict[det.material.id]
-                        except KeyError:
-                            dict_material[det.material.id] = temp_dict[det.material.id]
+                        _add_material_to_dict_material(temp_dict, dict_material)
 
+                    
                     for assemblydetlab in DetailLabor.objects.filter(detail_id=detail.id):
                         # перебираем трудозатраты деталей узла
                         count = assemblydetlab.time * assemblydetail.amount * assembly.amount * product.amount
@@ -54,26 +79,15 @@ def _get_manuf_plan_resources(slug):
                         #       + ' = ' + str(count))
                         # собираем все трудозатраты в словарь, чтобы объединить работы выполняемые на одном станке
                         temp_dict = dict.fromkeys([assemblydetlab.labor.id], count)
-                        try:
-                            dict_labor[assemblydetlab.labor.id] += temp_dict[assemblydetlab.labor.id]
-                        except KeyError:
-                            dict_labor[assemblydetlab.labor.id] = temp_dict[assemblydetlab.labor.id]
-                        # print(dict_labor)
+                        _add_labor_to_dict_labor(temp_dict, dict_labor)
 
-            for material in assembly.assembly.materials.all():
-                # print(material)
-                # перебираем материалы в узле
-                # am = AssemblyMaterial.objects.filter(material_id=material.id)
                 for assemblymaterial in AssemblyMaterial.objects.filter(assembly_id=assembly.assembly.id):
-                    print(assemblymaterial.material)
                     # перебираем отношения материалов в узле
+
                     count = assemblymaterial.amount * assembly.amount * product.amount
                     temp_dict = dict.fromkeys([assemblymaterial.material.id], count)
-                    try:
-                        dict_material[assemblymaterial.material.id] += temp_dict[assemblymaterial.material.id]
-                    except KeyError:
-                        dict_material[assemblymaterial.material.id] = temp_dict[assemblymaterial.material.id]
-                        # print(dict_material)
+                    _add_material_to_dict_material(temp_dict, dict_material)
+
 
             for standetail in assembly.assembly.standard_details.all():
                 # перебираем стандартные изделия в узле
@@ -89,11 +103,7 @@ def _get_manuf_plan_resources(slug):
                     #       + ' * ' + str(product.amount)
                     #       + ' = ' + str(count))
                     temp_dict = dict.fromkeys([assemstanddet.standard_detail.id], count)
-                    try:
-                        dict_stand[assemstanddet.standard_detail.id] += temp_dict[assemstanddet.standard_detail.id]
-                    except KeyError:
-                        dict_stand[assemstanddet.standard_detail.id] = temp_dict[assemstanddet.standard_detail.id]
-                    # print(dict_stand)
+                    _add_standard_detail_to_dict_stand(temp_dict, dict_stand)
 
         for productdetail in ProductDetail.objects.filter(product_id=product.product.id):
             # print(productdetail)
@@ -106,27 +116,19 @@ def _get_manuf_plan_resources(slug):
                 # print(productdetail.detail.name + ' - ' + detmat.material.name + ' - ' + str(productdetail.amount) +
                 #       ' * ' + str(detmat.amount) + ' = ' + str(count))
                 temp_dict = dict.fromkeys([detmat.material.id], count)
-                try:
-                    dict_material[detmat.material.id] += temp_dict[detmat.material.id]
-                except KeyError:
-                    dict_material[detmat.material.id] = temp_dict[detmat.material.id]
+                _add_material_to_dict_material(temp_dict, dict_material)
+
             for detlab in DetailLabor.objects.filter(detail_id=productdetail.detail.id):
                 count = detlab.time * productdetail.amount * product.amount
                 # print(str(detlab.labor.id) + ' - ' + detlab.labor.name + ' - ' + detlab.labor.machine
                 #       + ' - ' + str(detlab.time) + ' - ' + str(count))
                 temp_dict = dict.fromkeys([detlab.labor.id], count)
-                try:
-                    dict_labor[detlab.labor.id] += temp_dict[detlab.labor.id]
-                except KeyError:
-                    dict_labor[detlab.labor.id] = temp_dict[detlab.labor.id]
+                _add_labor_to_dict_labor(temp_dict, dict_labor)
+
         for prodmat in ProductMaterial.objects.filter(product_id=product.product.id):
-            # print(prodmat.material.name + ' - ' + str(prodmat.amount))
             count = prodmat.amount * product.amount
             temp_dict = dict.fromkeys([prodmat.material.id], count)
-            try:
-                dict_material[prodmat.material.id] += temp_dict[prodmat.material.id]
-            except KeyError:
-                dict_material[prodmat.material.id] = temp_dict[prodmat.material.id]
+            _add_material_to_dict_material(temp_dict, dict_material)
 
         for prodlab in ProductLabor.objects.filter(product_id=product.product.id):
             # print(prodmat.material.name + ' - ' + str(prodmat.amount))
@@ -134,18 +136,14 @@ def _get_manuf_plan_resources(slug):
             # print(product.amount)
             count = prodlab.time * product.amount
             temp_dict = dict.fromkeys([prodlab.labor.id], count)
-            try:
-                dict_labor[prodlab.labor.id] += temp_dict[prodlab.labor.id]
-            except KeyError:
-                dict_labor[prodlab.labor.id] = temp_dict[prodlab.labor.id]
+            _add_labor_to_dict_labor(temp_dict, dict_labor)
+
         for standdet in ProductStandardDetail.objects.filter(product_id=product.product.id):
             # print(standdet.standard_detail.name + ' - ' + str(standdet.amount))
             count = standdet.amount * product.amount
             temp_dict = dict.fromkeys([standdet.standard_detail.id], count)
-            try:
-                dict_stand[standdet.standard_detail.id] += temp_dict[standdet.standard_detail.id]
-            except KeyError:
-                dict_stand[standdet.standard_detail.id] = temp_dict[standdet.standard_detail.id]
+            _add_standard_detail_to_dict_stand(temp_dict, dict_stand)
+
     for assembly in MPAssembly.objects.filter(mp=mp):
         # перебираем узлы в плане
         for detail in assembly.assembly.details.all():
@@ -161,10 +159,8 @@ def _get_manuf_plan_resources(slug):
                     count = det.amount * assemblydetail.amount * assembly.amount
                     # соберем словарь ключ=(id материала) значение=(количество)
                     temp_dict = dict.fromkeys([det.material.id], count)
-                    try:
-                        dict_material[det.material.id] += temp_dict[det.material.id]
-                    except KeyError:
-                        dict_material[det.material.id] = temp_dict[det.material.id]
+                    _add_material_to_dict_material(temp_dict, dict_material)
+
                 for assemblydetlab in DetailLabor.objects.filter(detail_id=detail.id):
                     # перебираем трудозатраты деталей узла
                     count = assemblydetlab.time * assemblydetail.amount * assembly.amount
@@ -174,10 +170,7 @@ def _get_manuf_plan_resources(slug):
                     #       str(count))
                     # собираем все трудозатраты в словарь, чтобы объединить работы выполняемые на одном станке
                     temp_dict = dict.fromkeys([assemblydetlab.labor.id], count)
-                    try:
-                        dict_labor[assemblydetlab.labor.id] += temp_dict[assemblydetlab.labor.id]
-                    except KeyError:
-                        dict_labor[assemblydetlab.labor.id] = temp_dict[assemblydetlab.labor.id]
+                    _add_labor_to_dict_labor(temp_dict, dict_labor)
 
         for material in assembly.assembly.materials.all():
             # print(material)
@@ -192,10 +185,8 @@ def _get_manuf_plan_resources(slug):
                 # перебираем отношения материалов в узле
                 count = assemblymaterial.amount * assembly.amount
                 temp_dict = dict.fromkeys([assemblymaterial.material.id], count)
-                try:
-                    dict_material[assemblymaterial.material.id] += temp_dict[assemblymaterial.material.id]
-                except KeyError:
-                    dict_material[assemblymaterial.material.id] = temp_dict[assemblymaterial.material.id]
+                _add_material_to_dict_material(temp_dict, dict_material)
+
         for standetail in assembly.assembly.standard_details.all():
             # перебираем стандартные изделия в узле
             # asd1 = AssemblyStandardDetail.objects.filter(standard_detail_id=standetail.id)
@@ -210,11 +201,7 @@ def _get_manuf_plan_resources(slug):
                 #       + ' * ' + str(product.amount)
                 #       + ' = ' + str(count))
                 temp_dict = dict.fromkeys([assemstanddet.standard_detail.id], count)
-                try:
-                    dict_stand[assemstanddet.standard_detail.id] += temp_dict[assemstanddet.standard_detail.id]
-                except KeyError:
-                    dict_stand[assemstanddet.standard_detail.id] = temp_dict[assemstanddet.standard_detail.id]
-                # print(dict_stand)
+                _add_standard_detail_to_dict_stand(temp_dict, dict_stand)
 
     for mpdetail in MPDetail.objects.filter(mp=mp):
         # перебираем детали в изделии
@@ -226,27 +213,18 @@ def _get_manuf_plan_resources(slug):
             # print(productdetail.detail.name + ' - ' + detmat.material.name + ' - ' + str(productdetail.amount) +
             #       ' * ' + str(detmat.amount) + ' = ' + str(count))
             temp_dict = dict.fromkeys([detmat.material.id], count)
-            try:
-                dict_material[detmat.material.id] += temp_dict[detmat.material.id]
-            except KeyError:
-                dict_material[detmat.material.id] = temp_dict[detmat.material.id]
+            _add_material_to_dict_material(temp_dict, dict_material)
+
         for detlab in DetailLabor.objects.filter(detail_id=mpdetail.detail.id):
             count = detlab.time * mpdetail.amount
             # print(str(detlab.labor.id) + ' - ' + detlab.labor.name + ' - ' + detlab.labor.machine
             #       + ' - ' + str(detlab.time) + ' - ' + str(count))
             temp_dict = dict.fromkeys([detlab.labor.id], count)
-            try:
-                dict_labor[detlab.labor.id] += temp_dict[detlab.labor.id]
-            except KeyError:
-                dict_labor[detlab.labor.id] = temp_dict[detlab.labor.id]
+            _add_labor_to_dict_labor(temp_dict, dict_labor)
 
     for mplab in MPLabor.objects.filter(mp=mp):
-        # print(prodmat.material.name + ' - ' + str(prodmat.amount))
         temp_dict = dict.fromkeys([mplab.labor.id], mplab.time)
-        try:
-            dict_labor[mplab.labor.id] += temp_dict[mplab.labor.id]
-        except KeyError:
-            dict_labor[mplab.labor.id] = temp_dict[mplab.labor.id]
+        _add_labor_to_dict_labor(temp_dict, dict_labor)
 
     try:
         mpr = MPResources.objects.create(name=mp.name, slug=mp.slug)
