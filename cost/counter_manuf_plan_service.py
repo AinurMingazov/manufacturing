@@ -7,34 +7,14 @@ from cost.models import Product, ProductDetail, ProductStandardDetail, Detail, D
     MPAssembly, MPLabor, MPDetail, Material, AssemblyMaterial
 
 
-def _add_material_to_dict_material(temp_dict, dict_material):
-    """Добавляет материал в словарь dict_material"""
-    for i in temp_dict.keys():
-        if i in dict_material.keys():
-            dict_material[i] += temp_dict[i]
+def _add_data_to_main_dict(temp, main_dict):
+    """Добавляет временный словарь в основной словарь dict_material"""
+    for i in temp.keys():
+        if i in main_dict.keys():
+            main_dict[i] += temp[i]
         else:
-            dict_material[i] = temp_dict[i]
-    return dict_material
-
-
-def _add_standard_detail_to_dict_stand(temp_dict, dict_stand):
-    """Добавляет стандартное изделие в словарь dict_stand"""
-    for i in temp_dict.keys():
-        if i in dict_stand.keys():
-            dict_stand[i] += temp_dict[i]
-        else:
-            dict_stand[i] = temp_dict[i]
-    return dict_stand
-
-
-def _add_labor_to_dict_labor(temp_dict, dict_labor):
-    """Добавляет трудовые затраты в словарь dict_labor"""
-    for i in temp_dict.keys():
-        if i in dict_labor.keys():
-            dict_labor[i] += temp_dict[i]
-        else:
-            dict_labor[i] = temp_dict[i]
-    return dict_labor
+            main_dict[i] = temp[i]
+    return main_dict
 
 
 def _get_manuf_plan_resources(slug):
@@ -65,7 +45,7 @@ def _get_manuf_plan_resources(slug):
 
                         # соберем словарь ключ=(id материала) значение=(количество)
                         temp_dict = dict.fromkeys([det.material.id], count)
-                        _add_material_to_dict_material(temp_dict, dict_material)
+                        _add_data_to_main_dict(temp_dict, dict_material)
 
                     
                     for assemblydetlab in DetailLabor.objects.filter(detail_id=detail.id):
@@ -79,14 +59,14 @@ def _get_manuf_plan_resources(slug):
                         #       + ' = ' + str(count))
                         # собираем все трудозатраты в словарь, чтобы объединить работы выполняемые на одном станке
                         temp_dict = dict.fromkeys([assemblydetlab.labor.id], count)
-                        _add_labor_to_dict_labor(temp_dict, dict_labor)
+                        _add_data_to_main_dict(temp_dict, dict_labor)
 
                 for assemblymaterial in AssemblyMaterial.objects.filter(assembly_id=assembly.assembly.id):
                     # перебираем отношения материалов в узле
 
                     count = assemblymaterial.amount * assembly.amount * product.amount
                     temp_dict = dict.fromkeys([assemblymaterial.material.id], count)
-                    _add_material_to_dict_material(temp_dict, dict_material)
+                    _add_data_to_main_dict(temp_dict, dict_material)
 
 
             for standetail in assembly.assembly.standard_details.all():
@@ -103,7 +83,7 @@ def _get_manuf_plan_resources(slug):
                     #       + ' * ' + str(product.amount)
                     #       + ' = ' + str(count))
                     temp_dict = dict.fromkeys([assemstanddet.standard_detail.id], count)
-                    _add_standard_detail_to_dict_stand(temp_dict, dict_stand)
+                    _add_data_to_main_dict(temp_dict, dict_stand)
 
         for productdetail in ProductDetail.objects.filter(product_id=product.product.id):
             # print(productdetail)
@@ -116,19 +96,19 @@ def _get_manuf_plan_resources(slug):
                 # print(productdetail.detail.name + ' - ' + detmat.material.name + ' - ' + str(productdetail.amount) +
                 #       ' * ' + str(detmat.amount) + ' = ' + str(count))
                 temp_dict = dict.fromkeys([detmat.material.id], count)
-                _add_material_to_dict_material(temp_dict, dict_material)
+                _add_data_to_main_dict(temp_dict, dict_material)
 
             for detlab in DetailLabor.objects.filter(detail_id=productdetail.detail.id):
                 count = detlab.time * productdetail.amount * product.amount
                 # print(str(detlab.labor.id) + ' - ' + detlab.labor.name + ' - ' + detlab.labor.machine
                 #       + ' - ' + str(detlab.time) + ' - ' + str(count))
                 temp_dict = dict.fromkeys([detlab.labor.id], count)
-                _add_labor_to_dict_labor(temp_dict, dict_labor)
+                _add_data_to_main_dict(temp_dict, dict_labor)
 
         for prodmat in ProductMaterial.objects.filter(product_id=product.product.id):
             count = prodmat.amount * product.amount
             temp_dict = dict.fromkeys([prodmat.material.id], count)
-            _add_material_to_dict_material(temp_dict, dict_material)
+            _add_data_to_main_dict(temp_dict, dict_material)
 
         for prodlab in ProductLabor.objects.filter(product_id=product.product.id):
             # print(prodmat.material.name + ' - ' + str(prodmat.amount))
@@ -136,13 +116,13 @@ def _get_manuf_plan_resources(slug):
             # print(product.amount)
             count = prodlab.time * product.amount
             temp_dict = dict.fromkeys([prodlab.labor.id], count)
-            _add_labor_to_dict_labor(temp_dict, dict_labor)
+            _add_data_to_main_dict(temp_dict, dict_labor)
 
         for standdet in ProductStandardDetail.objects.filter(product_id=product.product.id):
             # print(standdet.standard_detail.name + ' - ' + str(standdet.amount))
             count = standdet.amount * product.amount
             temp_dict = dict.fromkeys([standdet.standard_detail.id], count)
-            _add_standard_detail_to_dict_stand(temp_dict, dict_stand)
+            _add_data_to_main_dict(temp_dict, dict_stand)
 
     for assembly in MPAssembly.objects.filter(mp=mp):
         # перебираем узлы в плане
@@ -159,7 +139,7 @@ def _get_manuf_plan_resources(slug):
                     count = det.amount * assemblydetail.amount * assembly.amount
                     # соберем словарь ключ=(id материала) значение=(количество)
                     temp_dict = dict.fromkeys([det.material.id], count)
-                    _add_material_to_dict_material(temp_dict, dict_material)
+                    _add_data_to_main_dict(temp_dict, dict_material)
 
                 for assemblydetlab in DetailLabor.objects.filter(detail_id=detail.id):
                     # перебираем трудозатраты деталей узла
@@ -170,7 +150,7 @@ def _get_manuf_plan_resources(slug):
                     #       str(count))
                     # собираем все трудозатраты в словарь, чтобы объединить работы выполняемые на одном станке
                     temp_dict = dict.fromkeys([assemblydetlab.labor.id], count)
-                    _add_labor_to_dict_labor(temp_dict, dict_labor)
+                    _add_data_to_main_dict(temp_dict, dict_labor)
 
         for material in assembly.assembly.materials.all():
             # print(material)
@@ -185,7 +165,7 @@ def _get_manuf_plan_resources(slug):
                 # перебираем отношения материалов в узле
                 count = assemblymaterial.amount * assembly.amount
                 temp_dict = dict.fromkeys([assemblymaterial.material.id], count)
-                _add_material_to_dict_material(temp_dict, dict_material)
+                _add_data_to_main_dict(temp_dict, dict_material)
 
         for standetail in assembly.assembly.standard_details.all():
             # перебираем стандартные изделия в узле
@@ -201,7 +181,7 @@ def _get_manuf_plan_resources(slug):
                 #       + ' * ' + str(product.amount)
                 #       + ' = ' + str(count))
                 temp_dict = dict.fromkeys([assemstanddet.standard_detail.id], count)
-                _add_standard_detail_to_dict_stand(temp_dict, dict_stand)
+                _add_data_to_main_dict(temp_dict, dict_stand)
 
     for mpdetail in MPDetail.objects.filter(mp=mp):
         # перебираем детали в изделии
@@ -213,18 +193,18 @@ def _get_manuf_plan_resources(slug):
             # print(productdetail.detail.name + ' - ' + detmat.material.name + ' - ' + str(productdetail.amount) +
             #       ' * ' + str(detmat.amount) + ' = ' + str(count))
             temp_dict = dict.fromkeys([detmat.material.id], count)
-            _add_material_to_dict_material(temp_dict, dict_material)
+            _add_data_to_main_dict(temp_dict, dict_material)
 
         for detlab in DetailLabor.objects.filter(detail_id=mpdetail.detail.id):
             count = detlab.time * mpdetail.amount
             # print(str(detlab.labor.id) + ' - ' + detlab.labor.name + ' - ' + detlab.labor.machine
             #       + ' - ' + str(detlab.time) + ' - ' + str(count))
             temp_dict = dict.fromkeys([detlab.labor.id], count)
-            _add_labor_to_dict_labor(temp_dict, dict_labor)
+            _add_data_to_main_dict(temp_dict, dict_labor)
 
     for mplab in MPLabor.objects.filter(mp=mp):
         temp_dict = dict.fromkeys([mplab.labor.id], mplab.time)
-        _add_labor_to_dict_labor(temp_dict, dict_labor)
+        _add_data_to_main_dict(temp_dict, dict_labor)
 
     try:
         mpr = MPResources.objects.create(name=mp.name, slug=mp.slug)
