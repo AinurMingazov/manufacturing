@@ -80,7 +80,7 @@ def _count_assembly_material_standarddetail_labor(slug, dict_material, dict_labo
                 temp_dict = dict.fromkeys([assemstanddet.standard_detail.id], count)
                 _add_data_to_main_dict(temp_dict, dict_stand)
 
-        for assemblylab in assembly.assembly.labor.all():  # перебираем трудовые затраты в узле
+        for assemblylab in assembly.assembly.labors.all():  # перебираем трудовые затраты в узле
             for assemblylab_rel in AssemblyLabor.objects.filter(assembly_id=assembly.assembly.id).filter(
                     labor_id=assemblylab.id):
                 count = assemblylab_rel.time * assembly.amount
@@ -129,7 +129,7 @@ def _count_product_material_standarddetail_labor(slug, dict_material, dict_labor
                         temp_dict = dict.fromkeys([assemstanddet.standard_detail.id], count)
                         _add_data_to_main_dict(temp_dict, dict_stand)
 
-                for assemblylab in assembly.assembly.labor.all():  # перебираем трудовые затраты в узле
+                for assemblylab in assembly.assembly.labors.all():  # перебираем трудовые затраты в узле
                     for assemblylab_rel in AssemblyLabor.objects.filter(assembly_id=assembly.assembly.id).filter(
                             labor_id=assemblylab.id):
                         count = assemblylab_rel.time * assembly.amount * product.amount
@@ -167,7 +167,7 @@ def _count_product_material_standarddetail_labor(slug, dict_material, dict_labor
 
 def _get_manuf_plan_resources(slug):
     mp = get_object_or_404(ManufacturingPlan, slug=slug)
-    dict_material = dict_labor = dict_stand = dict()
+    dict_material, dict_labor, dict_stand = dict(), dict(), dict()
 
     _count_product_material_standarddetail_labor(slug, dict_material, dict_labor, dict_stand)
     _count_assembly_material_standarddetail_labor(slug, dict_material, dict_labor, dict_stand)
