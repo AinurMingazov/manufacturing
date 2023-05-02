@@ -16,9 +16,11 @@ Django==4.0.3
 django-import-export==2.7.1
 djangorestframework==3.14.0
 et-xmlfile==1.1.0
+flake8==6.0.0
 iniconfig==1.1.1
 kombu==5.2.4
 MarkupPy==1.14
+mccabe==0.7.0
 mypy-extensions==1.0.0
 odfpy==1.4.1
 openpyxl==3.0.9
@@ -29,6 +31,8 @@ pluggy==1.0.0
 prompt-toolkit==3.0.30
 psycopg2-binary==2.9.3
 py==1.11.0
+pycodestyle==2.10.0
+pyflakes==3.0.1
 pyparsing==3.0.7
 pytest==7.1.1
 python-decouple==3.6
