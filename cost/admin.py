@@ -80,15 +80,25 @@ class MPResourcesLaborInlineAdmin(admin.TabularInline):
 class MaterialResource(resources.ModelResource):
     class Meta:
         model = Material
-        fields = ('id', 'name', 'unit',)
-        list_filter = ['name', ]
-        search_fields = ['name', ]
+        fields = (
+            "id",
+            "name",
+            "unit",
+        )
+        list_filter = [
+            "name",
+        ]
+        search_fields = [
+            "name",
+        ]
 
 
 class MaterialAdmin(ImportExportActionModelAdmin):
     resource_class = MaterialResource
     list_display = [field.name for field in Material._meta.fields if field.name != "id"]
-    search_fields = ['name', ]
+    search_fields = [
+        "name",
+    ]
 
 
 admin.site.register(Material, MaterialAdmin)
@@ -97,8 +107,14 @@ admin.site.register(Material, MaterialAdmin)
 class LaborResource(resources.ModelResource):
     class Meta:
         model = Labor
-        fields = ('id', 'name', 'machine',)
-        list_filter = ['name', ]
+        fields = (
+            "id",
+            "name",
+            "machine",
+        )
+        list_filter = [
+            "name",
+        ]
 
 
 class LaborAdmin(ImportExportActionModelAdmin):
@@ -112,13 +128,24 @@ admin.site.register(Labor, LaborAdmin)
 class StandardDetailResource(resources.ModelResource):
     class Meta:
         model = StandardDetail
-        fields = ('id', 'name','unit',)
-        list_filter = ['name', ]
-        search_fields = ['name', ]
+        fields = (
+            "id",
+            "name",
+            "unit",
+        )
+        list_filter = [
+            "name",
+        ]
+        search_fields = [
+            "name",
+        ]
+
 
 class StandardDetailAdmin(ImportExportActionModelAdmin):
     resource_class = StandardDetailResource
-    list_display = [field.name for field in StandardDetail._meta.fields if field.name != "id"]
+    list_display = [
+        field.name for field in StandardDetail._meta.fields if field.name != "id"
+    ]
 
 
 admin.site.register(StandardDetail, StandardDetailAdmin)
@@ -128,10 +155,22 @@ class DetailResource(resources.ModelResource):
     class Meta:
         model = Detail
         fieldsets = [
-            (None, {'fields': ['id', 'name', ]})
+            (
+                None,
+                {
+                    "fields": [
+                        "id",
+                        "name",
+                    ]
+                },
+            )
         ]
-        list_filter = ['name', ]
-        search_fields = ['name', ]
+        list_filter = [
+            "name",
+        ]
+        search_fields = [
+            "name",
+        ]
         inlines = (DetailLaborInlineAdmin, DetailMaterialInlineAdmin)
 
 
@@ -139,8 +178,11 @@ class DetailAdmin(ImportExportActionModelAdmin):
     resource_class = DetailResource
     list_display = [field.name for field in Detail._meta.fields if field.name != "id"]
     inlines = (DetailLaborInlineAdmin, DetailMaterialInlineAdmin)
-    search_fields = ['name', ]
-    autocomplete_fields = ['materials']
+    search_fields = [
+        "name",
+    ]
+    autocomplete_fields = ["materials"]
+
 
 admin.site.register(Detail, DetailAdmin)
 
@@ -149,18 +191,35 @@ class AssemblyResource(resources.ModelResource):
     class Meta:
         model = Assembly
         fieldsets = [
-            (None, {'fields': ['name', ]})
+            (
+                None,
+                {
+                    "fields": [
+                        "name",
+                    ]
+                },
+            )
         ]
-        list_filter = ['name',]
-        inlines = (AssemblyMaterialInlineAdmin, AssemblyLaborInlineAdmin, AssemblyStandardDetailInlineAdmin,
-                   AssemblyDetailInlineAdmin)
+        list_filter = [
+            "name",
+        ]
+        inlines = (
+            AssemblyMaterialInlineAdmin,
+            AssemblyLaborInlineAdmin,
+            AssemblyStandardDetailInlineAdmin,
+            AssemblyDetailInlineAdmin,
+        )
 
 
 class AssemblyAdmin(ImportExportActionModelAdmin):
     resource_class = AssemblyResource
     list_display = [field.name for field in Assembly._meta.fields if field.name != "id"]
-    inlines = (AssemblyMaterialInlineAdmin, AssemblyLaborInlineAdmin, AssemblyStandardDetailInlineAdmin,
-               AssemblyDetailInlineAdmin)
+    inlines = (
+        AssemblyMaterialInlineAdmin,
+        AssemblyLaborInlineAdmin,
+        AssemblyStandardDetailInlineAdmin,
+        AssemblyDetailInlineAdmin,
+    )
 
 
 admin.site.register(Assembly, AssemblyAdmin)
@@ -170,18 +229,37 @@ class ProductResource(resources.ModelResource):
     class Meta:
         model = Product
         fieldsets = [
-            (None, {'fields': ['name', ]})
+            (
+                None,
+                {
+                    "fields": [
+                        "name",
+                    ]
+                },
+            )
         ]
-        list_filter = ['name',]
-        inlines = (ProductDetailInlineAdmin, ProductStandardDetailInlineAdmin, ProductLaborInlineAdmin,
-                   ProductAssemblyInlineAdmin, ProductMaterialInlineAdmin)
+        list_filter = [
+            "name",
+        ]
+        inlines = (
+            ProductDetailInlineAdmin,
+            ProductStandardDetailInlineAdmin,
+            ProductLaborInlineAdmin,
+            ProductAssemblyInlineAdmin,
+            ProductMaterialInlineAdmin,
+        )
 
 
 class ProductAdmin(ImportExportActionModelAdmin):
     resource_class = ProductResource
     list_display = [field.name for field in Product._meta.fields if field.name != "id"]
-    inlines = (ProductDetailInlineAdmin, ProductStandardDetailInlineAdmin, ProductLaborInlineAdmin,
-               ProductAssemblyInlineAdmin, ProductMaterialInlineAdmin)
+    inlines = (
+        ProductDetailInlineAdmin,
+        ProductStandardDetailInlineAdmin,
+        ProductLaborInlineAdmin,
+        ProductAssemblyInlineAdmin,
+        ProductMaterialInlineAdmin,
+    )
 
 
 admin.site.register(Product, ProductAdmin)
@@ -190,20 +268,30 @@ admin.site.register(Product, ProductAdmin)
 class ManufacturingPlanResource(resources.ModelResource):
     class Meta:
         model = ManufacturingPlan
-        fieldsets = [
-            (None, {'fields': ['name', 'slug']})
-        ]
-        prepopulated_fields = {'slug': ('name',), }
-        list_filter = ['name', 'slug']
-        inlines = (MPProductInlineAdmin, MPAssemblyInlineAdmin,
-                   MPDetailInlineAdmin, MPLaborInlineAdmin)
+        fieldsets = [(None, {"fields": ["name", "slug"]})]
+        prepopulated_fields = {
+            "slug": ("name",),
+        }
+        list_filter = ["name", "slug"]
+        inlines = (
+            MPProductInlineAdmin,
+            MPAssemblyInlineAdmin,
+            MPDetailInlineAdmin,
+            MPLaborInlineAdmin,
+        )
 
 
 class ManufacturingPlanAdmin(ImportExportActionModelAdmin):
     resource_class = ManufacturingPlanResource
-    list_display = [field.name for field in ManufacturingPlan._meta.fields if field.name != "id"]
-    inlines = (MPProductInlineAdmin, MPAssemblyInlineAdmin,
-               MPDetailInlineAdmin, MPLaborInlineAdmin)
+    list_display = [
+        field.name for field in ManufacturingPlan._meta.fields if field.name != "id"
+    ]
+    inlines = (
+        MPProductInlineAdmin,
+        MPAssemblyInlineAdmin,
+        MPDetailInlineAdmin,
+        MPLaborInlineAdmin,
+    )
 
 
 admin.site.register(ManufacturingPlan, ManufacturingPlanAdmin)
@@ -213,19 +301,36 @@ class MPResourcesResource(resources.ModelResource):
     class Meta:
         model = MPResources
         fieldsets = [
-            (None, {'fields': ['name',]})
+            (
+                None,
+                {
+                    "fields": [
+                        "name",
+                    ]
+                },
+            )
         ]
-        prepopulated_fields = {'slug': ('name',), }
-        list_filter = ['name', 'slug']
-        inlines = (MPResourcesMaterialInlineAdmin, MPResourcesStandardDetailInlineAdmin,
-                   MPResourcesLaborInlineAdmin)
+        prepopulated_fields = {
+            "slug": ("name",),
+        }
+        list_filter = ["name", "slug"]
+        inlines = (
+            MPResourcesMaterialInlineAdmin,
+            MPResourcesStandardDetailInlineAdmin,
+            MPResourcesLaborInlineAdmin,
+        )
 
 
 class MPResourcesAdmin(ImportExportActionModelAdmin):
     resource_class = MPResourcesResource
-    list_display = [field.name for field in MPResources._meta.fields if field.name != "id"]
-    inlines = (MPResourcesMaterialInlineAdmin, MPResourcesStandardDetailInlineAdmin,
-               MPResourcesLaborInlineAdmin)
+    list_display = [
+        field.name for field in MPResources._meta.fields if field.name != "id"
+    ]
+    inlines = (
+        MPResourcesMaterialInlineAdmin,
+        MPResourcesStandardDetailInlineAdmin,
+        MPResourcesLaborInlineAdmin,
+    )
 
 
 admin.site.register(MPResources, MPResourcesAdmin)

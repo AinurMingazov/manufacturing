@@ -3,11 +3,38 @@ from rest_framework import viewsets, renderers, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from cost.models import Product, ProductDetail, ProductStandardDetail, Detail, DetailLabor, ProductLabor, \
-    ProductAssembly, Assembly, AssemblyDetail, AssemblyLabor, AssemblyStandardDetail, DetailMaterial, ProductMaterial, \
-    ManufacturingPlan, MPResources, MPResourcesMaterial, MPResourcesLabor, MPResourcesStandardDetail, MPProduct, \
-    MPAssembly, MPLabor, MPDetail, Material, AssemblyMaterial
-from cost.serializers import ManufacturingPlanSerializer, ProductSerializer, AssemblySerializer, DetailSerializer
+from cost.models import (
+    Product,
+    ProductDetail,
+    ProductStandardDetail,
+    Detail,
+    DetailLabor,
+    ProductLabor,
+    ProductAssembly,
+    Assembly,
+    AssemblyDetail,
+    AssemblyLabor,
+    AssemblyStandardDetail,
+    DetailMaterial,
+    ProductMaterial,
+    ManufacturingPlan,
+    MPResources,
+    MPResourcesMaterial,
+    MPResourcesLabor,
+    MPResourcesStandardDetail,
+    MPProduct,
+    MPAssembly,
+    MPLabor,
+    MPDetail,
+    Material,
+    AssemblyMaterial,
+)
+from cost.serializers import (
+    ManufacturingPlanSerializer,
+    ProductSerializer,
+    AssemblySerializer,
+    DetailSerializer,
+)
 
 
 class ManufacturingPlanListViewSet(viewsets.ModelViewSet):
