@@ -21,16 +21,18 @@
 
 # Установка
 
-Необходимо склонировать приложение. Создать виртуальное окружение.
+Необходимо склонировать приложение. Создать виртуальное окружение. Установить Docker.
+
 Переименовать **.env-sample** в **.env**
+
 Выполнить:
 ```
-pip install -r requirements.txt
-python manage.py makemigrations
-python manage.py migrate
-python manage.py createsuperuser # создать суперюзера
-python manage.py runserver
+docker-compose up web
 ```
 Дальнейшая работа выполняется в админке.
+
+Доступ в админку логин `admin` пароль `admin`
+
 Есть возможность импортировать: материалы, операции, стандартные изделия из документа
+
 Excel. Кнопка импорт в админке.
