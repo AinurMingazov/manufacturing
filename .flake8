@@ -3,4 +3,6 @@ exclude =
     migrations,
 	__init__.py,
     settings,
+    .venv,
+    venv,
 max-line-length = 120

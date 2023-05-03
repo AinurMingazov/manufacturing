@@ -33,6 +33,19 @@ docker-compose up web
 
 Доступ в админку логин `admin` пароль `admin`
 
-Есть возможность импортировать: материалы, операции, стандартные изделия из документа
+Есть возможность импортировать: материалы, операции, стандартные изделия из документа Excel.
 
-Excel. Кнопка импорт в админке.
+Кнопка импорт в админке.
+
+---
+Загрузить backup:
+
+python manage.py dbrestore -z -I backup.psql.bin.gz
+
+---
+
+backup на сервере:
+
+python manage.py dbbackup --skip-checks --noinput --clean --compress --no-color
+
+python manage.py mediabackup --skip-checks --noinput --clean --compress --no-color
