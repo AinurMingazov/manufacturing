@@ -5,8 +5,24 @@ from django.urls import reverse
 class Material(models.Model):
     """Модель описывает материал"""
 
-    name = models.CharField(max_length=60)
-    unit = models.CharField(max_length=20, null=True, blank=True)
+    name = models.CharField(max_length=60, unique=True, verbose_name="Наименование")
+    unit = models.CharField(
+        max_length=20, default="кг", verbose_name="Единица измерения"
+    )
+    price_per_meter = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Стоимость за метр",
+    )
+    price_per_ton = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Стоимость за тонну",
+    )
 
     def __str__(self):
         return self.name

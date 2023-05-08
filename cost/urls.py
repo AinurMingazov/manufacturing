@@ -6,6 +6,7 @@ from . import views, api
 
 urlpatterns = [
     path("", views.plan_list, name="plan_list"),
+    path("parser/", views.parser, name="parser"),
     path("plan/<slug:slug>/", views.mp_detail, name="mp_detail"),
     path("product/<int:id>/", views.product_detail, name="product_detail"),
     path("assembly/<int:id>/", views.assembly_detail, name="assembly_detail"),
