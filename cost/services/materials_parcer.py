@@ -10,7 +10,7 @@ def get_materials_data():
     materials_data = []
     for tr_tag in tr_tags:
         price_tags = tr_tag.find_all("div", {"class": "tr js-item-block"})
-        for price_tag in price_tags[:5]:
+        for price_tag in price_tags:
             title_tag = price_tag.find("div", {"class": "td title"}).text.strip()
             price_char_tag = (
                 price_tag.find_all("div", {"class": "td price list_char"})[1]
