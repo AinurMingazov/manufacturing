@@ -1,31 +1,13 @@
 from rest_framework import serializers
 
-from cost.models import (
-    Product,
-    ProductDetail,
-    ProductStandardDetail,
-    Detail,
-    DetailLabor,
-    ProductLabor,
-    ProductAssembly,
-    Assembly,
-    AssemblyDetail,
-    AssemblyLabor,
-    AssemblyStandardDetail,
-    DetailMaterial,
-    ProductMaterial,
-    ManufacturingPlan,
-    MPResources,
-    MPResourcesMaterial,
-    MPResourcesLabor,
-    MPResourcesStandardDetail,
-    MPProduct,
-    MPAssembly,
-    MPLabor,
-    MPDetail,
-    Material,
-    AssemblyMaterial,
-)
+from cost.models import (Assembly, AssemblyDetail, AssemblyLabor,
+                         AssemblyMaterial, AssemblyStandardDetail, Detail,
+                         DetailLabor, DetailMaterial, ManufacturingPlan,
+                         Material, MPAssembly, MPDetail, MPLabor, MPProduct,
+                         MPResources, MPResourcesLabor, MPResourcesMaterial,
+                         MPResourcesStandardDetail, Product, ProductAssembly,
+                         ProductDetail, ProductLabor, ProductMaterial,
+                         ProductStandardDetail)
 
 
 class ManufacturingPlanSerializer(serializers.ModelSerializer):

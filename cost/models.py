@@ -1,11 +1,13 @@
 from django.db import models
 from django.urls import reverse
+from pytils.translit import slugify
 
 
 class Material(models.Model):
     """Модель описывает материал"""
 
     name = models.CharField(max_length=60, unique=True, verbose_name="Наименование")
+    slug = models.CharField(max_length=60, unique=True, verbose_name="Поле slug")
     unit = models.CharField(
         max_length=20, default="кг", verbose_name="Единица измерения"
     )
@@ -24,6 +26,10 @@ class Material(models.Model):
         verbose_name="Стоимость за тонну",
     )
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Material, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 
@@ -34,13 +40,20 @@ class Material(models.Model):
 
 
 class Labor(models.Model):
-    """Модель описывает операции детали"""
+    """Модель описывает технологические операции"""
 
-    name = models.CharField(max_length=60)
-    machine = models.CharField(max_length=60, null=True)
+    name = models.CharField(max_length=60, unique=True, verbose_name="Наименование")
+    slug = models.CharField(max_length=60, unique=True, verbose_name="Поле slug")
+    machine = models.CharField(
+        max_length=60, unique=True, verbose_name="Наименование оборудования"
+    )
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Labor, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.machine
+        return f"{self.name} - {self.machine}"
 
     class Meta:
         ordering = ("name",)
@@ -51,8 +64,19 @@ class Labor(models.Model):
 class StandardDetail(models.Model):
     """Модель описывает стандартные детали"""
 
-    name = models.CharField(max_length=100)
-    unit = models.CharField(max_length=20, null=True, blank=True)
+    name = models.CharField(max_length=100, unique=True, verbose_name="Наименование")
+    slug = models.CharField(max_length=100, unique=True, verbose_name="Поле slug")
+    unit = models.CharField(
+        max_length=20,
+        null=True,
+        blank=True,
+        default="шт.",
+        verbose_name="Единица измерения",
+    )
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(StandardDetail, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -66,13 +90,19 @@ class StandardDetail(models.Model):
 class Detail(models.Model):
     """Модель описывает деталь"""
 
-    name = models.CharField(max_length=60)
+    name = models.CharField(max_length=60, unique=True, verbose_name="Наименование")
+    slug = models.CharField(max_length=60, unique=True, verbose_name="Поле slug")
+
     materials = models.ManyToManyField(
         "Material", through="DetailMaterial", through_fields=("detail", "material")
     )
     labors = models.ManyToManyField(
         "Labor", through="DetailLabor", through_fields=("detail", "labor")
     )
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Detail, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -88,7 +118,13 @@ class DetailLabor(models.Model):
 
     detail = models.ForeignKey("Detail", on_delete=models.SET_NULL, null=True)
     labor = models.ForeignKey("Labor", on_delete=models.SET_NULL, null=True)
-    time = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    time = models.DecimalField(
+        max_digits=12,
+        decimal_places=3,
+        null=True,
+        blank=True,
+        verbose_name="Количество",
+    )
 
     class Meta:
         ordering = ("labor",)
@@ -99,7 +135,13 @@ class DetailMaterial(models.Model):
 
     detail = models.ForeignKey("Detail", on_delete=models.SET_NULL, null=True)
     material = models.ForeignKey("Material", on_delete=models.SET_NULL, null=True)
-    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=3,
+        null=True,
+        blank=True,
+        verbose_name="Количество",
+    )
 
     class Meta:
         ordering = ("material",)
@@ -108,7 +150,9 @@ class DetailMaterial(models.Model):
 class Assembly(models.Model):
     """Модель описывает узел"""
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=60, unique=True, verbose_name="Наименование")
+    slug = models.CharField(max_length=60, unique=True, verbose_name="Поле slug")
+
     materials = models.ManyToManyField(
         "Material", through="AssemblyMaterial", through_fields=("assembly", "material")
     )
@@ -123,6 +167,10 @@ class Assembly(models.Model):
     labors = models.ManyToManyField(
         "Labor", through="AssemblyLabor", through_fields=("assembly", "labor")
     )
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Assembly, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -141,7 +189,13 @@ class AssemblyMaterial(models.Model):
 
     assembly = models.ForeignKey("Assembly", on_delete=models.SET_NULL, null=True)
     material = models.ForeignKey("Material", on_delete=models.SET_NULL, null=True)
-    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=3,
+        null=True,
+        blank=True,
+        verbose_name="Количество",
+    )
 
     class Meta:
         ordering = ("material",)
@@ -152,7 +206,7 @@ class AssemblyDetail(models.Model):
 
     assembly = models.ForeignKey("Assembly", on_delete=models.SET_NULL, null=True)
     detail = models.ForeignKey("Detail", on_delete=models.SET_NULL, null=True)
-    amount = models.PositiveIntegerField(default=0)
+    amount = models.PositiveIntegerField(default=1, verbose_name="Количество")
 
     class Meta:
         ordering = ("detail",)
@@ -165,7 +219,13 @@ class AssemblyStandardDetail(models.Model):
     standard_detail = models.ForeignKey(
         "StandardDetail", on_delete=models.SET_NULL, null=True
     )
-    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=3,
+        null=True,
+        blank=True,
+        verbose_name="Количество",
+    )
 
     class Meta:
         ordering = ("standard_detail",)
@@ -176,7 +236,13 @@ class AssemblyLabor(models.Model):
 
     assembly = models.ForeignKey("Assembly", on_delete=models.SET_NULL, null=True)
     labor = models.ForeignKey("Labor", on_delete=models.SET_NULL, null=True)
-    time = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    time = models.DecimalField(
+        max_digits=12,
+        decimal_places=3,
+        null=True,
+        blank=True,
+        verbose_name="Количество",
+    )
 
     class Meta:
         ordering = ("labor",)
@@ -185,7 +251,9 @@ class AssemblyLabor(models.Model):
 class Product(models.Model):
     """Модель описывает изделия"""
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True, verbose_name="Наименование")
+    slug = models.CharField(max_length=100, unique=True, verbose_name="Поле slug")
+
     materials = models.ManyToManyField(
         "Material", through="ProductMaterial", through_fields=("product", "material")
     )
@@ -204,6 +272,10 @@ class Product(models.Model):
         "Labor", through="ProductLabor", through_fields=("product", "labor")
     )
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Product, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 
@@ -221,7 +293,13 @@ class ProductMaterial(models.Model):
 
     product = models.ForeignKey("Product", on_delete=models.SET_NULL, null=True)
     material = models.ForeignKey("Material", on_delete=models.SET_NULL, null=True)
-    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=3,
+        null=True,
+        blank=True,
+        verbose_name="Количество",
+    )
 
     class Meta:
         ordering = ("material",)
@@ -232,7 +310,7 @@ class ProductAssembly(models.Model):
 
     assembly = models.ForeignKey("Assembly", on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey("Product", on_delete=models.SET_NULL, null=True)
-    amount = models.PositiveIntegerField(default=0)
+    amount = models.PositiveIntegerField(default=1, verbose_name="Количество")
 
     class Meta:
         ordering = ("assembly",)
@@ -243,7 +321,7 @@ class ProductDetail(models.Model):
 
     product = models.ForeignKey("Product", on_delete=models.SET_NULL, null=True)
     detail = models.ForeignKey("Detail", on_delete=models.SET_NULL, null=True)
-    amount = models.PositiveIntegerField(default=0)
+    amount = models.PositiveIntegerField(default=1, verbose_name="Количество")
 
     class Meta:
         ordering = ("detail",)
@@ -256,7 +334,13 @@ class ProductStandardDetail(models.Model):
     standard_detail = models.ForeignKey(
         "StandardDetail", on_delete=models.SET_NULL, null=True
     )
-    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=3,
+        null=True,
+        blank=True,
+        verbose_name="Количество",
+    )
 
     class Meta:
         ordering = ("standard_detail",)
@@ -267,7 +351,13 @@ class ProductLabor(models.Model):
 
     labor = models.ForeignKey("Labor", on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey("Product", on_delete=models.SET_NULL, null=True)
-    time = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    time = models.DecimalField(
+        max_digits=12,
+        decimal_places=3,
+        null=True,
+        blank=True,
+        verbose_name="Количество",
+    )
 
     class Meta:
         ordering = ("labor",)
@@ -276,8 +366,8 @@ class ProductLabor(models.Model):
 class ManufacturingPlan(models.Model):
     """Модель описывает производственный план"""
 
-    name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=100, unique=True)
+    name = models.CharField(max_length=200, unique=True, verbose_name="Наименование")
+    slug = models.SlugField(max_length=200, unique=True, verbose_name="Поле slug")
     products = models.ManyToManyField(
         "Product", through="MPProduct", through_fields=("mp", "product")
     )
@@ -290,6 +380,10 @@ class ManufacturingPlan(models.Model):
     labors = models.ManyToManyField(
         "Labor", through="MPLabor", through_fields=("mp", "labor")
     )
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(ManufacturingPlan, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -308,7 +402,7 @@ class MPProduct(models.Model):
 
     mp = models.ForeignKey("ManufacturingPlan", on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey("Product", on_delete=models.SET_NULL, null=True)
-    amount = models.PositiveIntegerField(default=0)
+    amount = models.PositiveIntegerField(default=1, verbose_name="Количество")
 
 
 class MPAssembly(models.Model):
@@ -316,7 +410,7 @@ class MPAssembly(models.Model):
 
     mp = models.ForeignKey("ManufacturingPlan", on_delete=models.SET_NULL, null=True)
     assembly = models.ForeignKey("Assembly", on_delete=models.SET_NULL, null=True)
-    amount = models.PositiveIntegerField(default=0)
+    amount = models.PositiveIntegerField(default=1, verbose_name="Количество")
 
 
 class MPDetail(models.Model):
@@ -324,7 +418,7 @@ class MPDetail(models.Model):
 
     mp = models.ForeignKey("ManufacturingPlan", on_delete=models.SET_NULL, null=True)
     detail = models.ForeignKey("Detail", on_delete=models.SET_NULL, null=True)
-    amount = models.PositiveIntegerField(default=0)
+    amount = models.PositiveIntegerField(default=1, verbose_name="Количество")
 
 
 class MPLabor(models.Model):
@@ -332,7 +426,13 @@ class MPLabor(models.Model):
 
     mp = models.ForeignKey("ManufacturingPlan", on_delete=models.SET_NULL, null=True)
     labor = models.ForeignKey("Labor", on_delete=models.SET_NULL, null=True)
-    time = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    time = models.DecimalField(
+        max_digits=12,
+        decimal_places=3,
+        null=True,
+        blank=True,
+        verbose_name="Количество",
+    )
 
     class Meta:
         ordering = ("mp",)
@@ -341,8 +441,8 @@ class MPLabor(models.Model):
 class MPResources(models.Model):
     """Модель описывает ресурсы необходимые для выполнения производственного плана"""
 
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True, verbose_name="Наименование")
+    slug = models.SlugField(max_length=100, unique=True, verbose_name="Поле slug")
     materials = models.ManyToManyField(
         "Material",
         through="MPResourcesMaterial",
@@ -356,6 +456,10 @@ class MPResources(models.Model):
     labors = models.ManyToManyField(
         "Labor", through="MPResourcesLabor", through_fields=("mp_resources", "labor")
     )
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(MPResources, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -373,7 +477,13 @@ class MPResourcesMaterial(models.Model):
         "MPResources", on_delete=models.SET_NULL, null=True
     )
     material = models.ForeignKey("Material", on_delete=models.SET_NULL, null=True)
-    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=3,
+        null=True,
+        blank=True,
+        verbose_name="Количество",
+    )
 
     class Meta:
         ordering = ("material",)
@@ -388,7 +498,13 @@ class MPResourcesStandardDetail(models.Model):
     standard_detail = models.ForeignKey(
         "StandardDetail", on_delete=models.SET_NULL, null=True
     )
-    amount = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=3,
+        null=True,
+        blank=True,
+        verbose_name="Количество",
+    )
 
     class Meta:
         ordering = ("standard_detail",)
@@ -401,7 +517,13 @@ class MPResourcesLabor(models.Model):
         "MPResources", on_delete=models.SET_NULL, null=True
     )
     labor = models.ForeignKey("Labor", on_delete=models.SET_NULL, null=True)
-    time = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    time = models.DecimalField(
+        max_digits=12,
+        decimal_places=3,
+        null=True,
+        blank=True,
+        verbose_name="Количество",
+    )
 
     class Meta:
         ordering = ("labor",)

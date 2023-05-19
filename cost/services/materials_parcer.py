@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from pytils.translit import slugify
 
 from cost.models import Material
 
@@ -32,9 +33,11 @@ def create_or_update_materials(materials_data):
     for title_tag, price_char_tag, price_tag in materials_data:
         material = Material.objects.filter(name=title_tag)
         if not material:
+            print(title_tag)
             materials_create.append(
                 Material(
                     name=title_tag,
+                    slug=slugify(title_tag),
                     price_per_meter=price_char_tag,
                     price_per_ton=price_tag,
                 )
@@ -56,7 +59,7 @@ def create_or_update_materials(materials_data):
         Material.objects.bulk_create(materials_create)
     if materials_update:
         Material.objects.bulk_update(
-            materials_update, ["name", "price_per_meter", "price_per_ton"]
+            materials_update, ["price_per_meter", "price_per_ton"]
         )
 
 

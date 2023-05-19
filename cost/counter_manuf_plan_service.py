@@ -1,28 +1,13 @@
-from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
+from django.shortcuts import get_object_or_404
 
-from cost.models import (
-    ProductDetail,
-    ProductStandardDetail,
-    DetailLabor,
-    ProductLabor,
-    ProductAssembly,
-    AssemblyDetail,
-    AssemblyLabor,
-    AssemblyStandardDetail,
-    DetailMaterial,
-    ProductMaterial,
-    ManufacturingPlan,
-    MPResources,
-    MPResourcesMaterial,
-    MPResourcesLabor,
-    MPResourcesStandardDetail,
-    MPProduct,
-    MPAssembly,
-    MPLabor,
-    MPDetail,
-    AssemblyMaterial,
-)
+from cost.models import (AssemblyDetail, AssemblyLabor, AssemblyMaterial,
+                         AssemblyStandardDetail, DetailLabor, DetailMaterial,
+                         ManufacturingPlan, MPAssembly, MPDetail, MPLabor,
+                         MPProduct, MPResources, MPResourcesLabor,
+                         MPResourcesMaterial, MPResourcesStandardDetail,
+                         ProductAssembly, ProductDetail, ProductLabor,
+                         ProductMaterial, ProductStandardDetail)
 
 
 def _add_data_to_main_dict(temp, main_dict):

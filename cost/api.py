@@ -1,40 +1,18 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, renderers, permissions
+from rest_framework import permissions, renderers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from cost.models import (
-    Product,
-    ProductDetail,
-    ProductStandardDetail,
-    Detail,
-    DetailLabor,
-    ProductLabor,
-    ProductAssembly,
-    Assembly,
-    AssemblyDetail,
-    AssemblyLabor,
-    AssemblyStandardDetail,
-    DetailMaterial,
-    ProductMaterial,
-    ManufacturingPlan,
-    MPResources,
-    MPResourcesMaterial,
-    MPResourcesLabor,
-    MPResourcesStandardDetail,
-    MPProduct,
-    MPAssembly,
-    MPLabor,
-    MPDetail,
-    Material,
-    AssemblyMaterial,
-)
-from cost.serializers import (
-    ManufacturingPlanSerializer,
-    ProductSerializer,
-    AssemblySerializer,
-    DetailSerializer,
-)
+from cost.models import (Assembly, AssemblyDetail, AssemblyLabor,
+                         AssemblyMaterial, AssemblyStandardDetail, Detail,
+                         DetailLabor, DetailMaterial, ManufacturingPlan,
+                         Material, MPAssembly, MPDetail, MPLabor, MPProduct,
+                         MPResources, MPResourcesLabor, MPResourcesMaterial,
+                         MPResourcesStandardDetail, Product, ProductAssembly,
+                         ProductDetail, ProductLabor, ProductMaterial,
+                         ProductStandardDetail)
+from cost.serializers import (AssemblySerializer, DetailSerializer,
+                              ManufacturingPlanSerializer, ProductSerializer)
 
 
 class ManufacturingPlanListViewSet(viewsets.ModelViewSet):

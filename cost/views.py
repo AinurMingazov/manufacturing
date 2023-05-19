@@ -1,10 +1,9 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
 
-from cost.counter_manuf_plan_service import _get_manuf_plan_resources
 from cost import models
-
+from cost.counter_manuf_plan_service import _get_manuf_plan_resources
 from cost.services.materials_parcer import parser_material
 
 
