@@ -6,11 +6,16 @@ from . import api, views
 urlpatterns = [
     path("", views.plan_list, name="plan_list"),
     path("parser/", views.parser, name="parser"),
+    path("material/<slug:slug>/", views.material_detail, name="material_detail"),
+    path(
+        "standard_detail/<slug:slug>/",
+        views.standard_detail,
+        name="standard_detail_detail",
+    ),
+    path("detail/<slug:slug>/", views.detail_detail, name="detail_detail"),
+    path("assembly/<slug:slug>/", views.assembly_detail, name="assembly_detail"),
     path("plan/<slug:slug>/", views.mp_detail, name="mp_detail"),
-    path("product/<int:id>/", views.product_detail, name="product_detail"),
-    path("assembly/<int:id>/", views.assembly_detail, name="assembly_detail"),
-    path("detail/<int:id>/", views.detail_detail, name="detail_detail"),
-    path("material/<int:id>/", views.material_detail, name="material_detail"),
+    path("product/<slug:slug>/", views.product_detail, name="product_detail"),
     path(
         "mp_resources_count/<slug:slug>/",
         views.mp_resources_count,

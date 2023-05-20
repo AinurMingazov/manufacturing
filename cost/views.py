@@ -24,9 +24,9 @@ def plan_list(
     return render(request, "cost/plan_list.html", {"mp": mp})
 
 
-def material_detail(request, id):
+def material_detail(request, slug):
     """Функция отображает информацию о применении материала."""
-    material = get_object_or_404(models.Material, id=id)
+    material = get_object_or_404(models.Material, slug=slug)
     return render(
         request,
         "cost/material_detail.html",
@@ -43,9 +43,30 @@ def material_detail(request, id):
     )
 
 
-def detail_detail(request, id):
+def standard_detail(request, slug):
+    """Функция отображает информацию о применении материала."""
+    standard_detail = get_object_or_404(models.Material, slug=slug)
+    return render(
+        request,
+        "cost/material_detail.html",
+        {
+            "standard_detail": standard_detail,
+            "detail_materials": models.DetailMaterial.objects.filter(
+                standard_detail=standard_detail
+            ),
+            "assembly_materials": models.AssemblyMaterial.objects.filter(
+                material=standard_detail
+            ),
+            "product_materials": models.ProductMaterial.objects.filter(
+                material=standard_detail
+            ),
+        },
+    )
+
+
+def detail_detail(request, slug):
     """Функция отображает подробную информацию о детали."""
-    detail = get_object_or_404(models.Detail, id=id)
+    detail = get_object_or_404(models.Detail, slug=slug)
     return render(
         request,
         "cost/detail_detail.html",
@@ -57,9 +78,9 @@ def detail_detail(request, id):
     )
 
 
-def assembly_detail(request, id):
+def assembly_detail(request, slug):
     """Функция отображает подробную информацию о сборочной единице."""
-    assembly = get_object_or_404(models.Assembly, id=id)
+    assembly = get_object_or_404(models.Assembly, slug=slug)
     return render(
         request,
         "cost/assembly_detail.html",
@@ -77,9 +98,9 @@ def assembly_detail(request, id):
     )
 
 
-def product_detail(request, id):
+def product_detail(request, slug):
     """Функция отображает подробную информацию об изделии."""
-    product = get_object_or_404(models.Product, id=id)
+    product = get_object_or_404(models.Product, slug=slug)
     return render(
         request,
         "cost/product_detail.html",
