@@ -169,7 +169,7 @@ class DetailMaterial(models.Model):
 
 
 class Assembly(models.Model):
-    """Модель описывает узел"""
+    """Модель описывает сборочную единицу"""
 
     name = models.CharField(max_length=60, unique=True, verbose_name="Наименование")
     slug = models.CharField(max_length=60, unique=True, verbose_name="Поле slug")
@@ -206,7 +206,7 @@ class Assembly(models.Model):
 
 
 class AssemblyMaterial(models.Model):
-    """Модель описывает материалы узла"""
+    """Модель описывает материалы сборочной единицы"""
 
     assembly = models.ForeignKey(
         "Assembly",
@@ -232,7 +232,7 @@ class AssemblyMaterial(models.Model):
 
 
 class AssemblyDetail(models.Model):
-    """Модель описывает детали узла"""
+    """Модель описывает детали сборочной единицы"""
 
     assembly = models.ForeignKey(
         "Assembly",
@@ -252,7 +252,7 @@ class AssemblyDetail(models.Model):
 
 
 class AssemblyStandardDetail(models.Model):
-    """Модель описывает стандартные изделия узла"""
+    """Модель описывает стандартные изделия сборочной единицы"""
 
     assembly = models.ForeignKey(
         "Assembly",
@@ -281,7 +281,7 @@ class AssemblyStandardDetail(models.Model):
 
 
 class AssemblyLabor(models.Model):
-    """Модель описывает трудозатраты на изготовления узла"""
+    """Модель описывает трудозатраты на изготовления сборочной единицы"""
 
     assembly = models.ForeignKey(
         "Assembly",
@@ -347,7 +347,7 @@ class Product(models.Model):
 
 
 class ProductMaterial(models.Model):
-    """Модель описывает материалы узла"""
+    """Модель описывает материалы сборочной единицы"""
 
     product = models.ForeignKey(
         "Product", on_delete=models.SET_NULL, null=True, verbose_name="Изделие"
@@ -370,7 +370,7 @@ class ProductMaterial(models.Model):
 
 
 class ProductAssembly(models.Model):
-    """Модель описывает узлы изделия"""
+    """Модель описывает сборочной единицы изделия"""
 
     assembly = models.ForeignKey(
         "Assembly",
@@ -509,7 +509,7 @@ class MPProduct(models.Model):
 
 
 class MPAssembly(models.Model):
-    """Модель описывает узлы производственного плана"""
+    """Модель описывает сборочной единицы производственного плана"""
 
     mp = models.ForeignKey(
         "ManufacturingPlan",

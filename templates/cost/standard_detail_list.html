@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+ 
+{% block title %}Стандартные изделия{% endblock %}
+
+{% block content %}
+<h2>Стандартные изделия</h2>
+ <div class="table-responsive">
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th scope="col">Наименование</th>
+            <th scope="col">Единица измерения</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for standard_detail in standard_details %}
+          <tr>
+            <td><a href="{{ standard_detail.get_absolute_url }}"> {{ standard_detail.name }}</a></td>
+              <td> {{ standard_detail.unit }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

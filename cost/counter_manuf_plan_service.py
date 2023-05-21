@@ -47,7 +47,7 @@ def _count_detail_material_and_labor(slug, dict_material, dict_labor):
 def _count_assembly_material_standarddetail_labor(
     slug, dict_material, dict_labor, dict_stand
 ):
-    """Рассчитывает количество материала, стандартных изделий и трудовых затрат для сборочного узла"""
+    """Рассчитывает количество материала, стандартных изделий и трудовых затрат для сборочной единицы"""
     mp = get_object_or_404(ManufacturingPlan, slug=slug)
     for assembly in MPAssembly.objects.filter(mp=mp):  # перебираем узлы в плане
         for detail in assembly.assembly.details.all():  # перебираем детали в узле

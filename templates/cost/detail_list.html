@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+ 
+{% block title %}Детали{% endblock %}
+
+{% block content %}
+<h2>Детали</h2>
+ <div class="table-responsive">
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th scope="col">Наименование</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for detail in details %}
+          <tr>
+            <td><a href="{{ detail.get_absolute_url }}"> {{ detail.name }}</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

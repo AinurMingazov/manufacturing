@@ -5,8 +5,14 @@ from . import api, views
 
 urlpatterns = [
     path("", views.plan_list, name="plan_list"),
+    path("materials/", views.material_list, name="material_list"),
+    path("standard_details/", views.standard_detail_list, name="standard_detail_list"),
+    path("details/", views.detail_list, name="detail_list"),
+    path("assemblies/", views.assembly_list, name="assembly_list"),
+    path("products/", views.product_list, name="product_list"),
+
     path("parser/", views.parser, name="parser"),
-    path("material/<slug:slug>/", views.material_detail, name="material_detail"),
+    path("material/<slug:slug>/", views.MaterialDetail.as_view(), name="material_detail"),
     path(
         "standard_detail/<slug:slug>/",
         views.standard_detail,
