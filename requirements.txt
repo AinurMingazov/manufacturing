@@ -14,7 +14,7 @@ colorama==0.4.4
 coverage==7.2.5
 defusedxml==0.7.1
 diff-match-patch==20200713
-Django==4.0.3
+Django>=4.1.10
 django-dbbackup==4.0.2
 django-import-export==2.7.1
 djangorestframework==3.14.0
