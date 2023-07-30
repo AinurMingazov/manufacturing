@@ -1,9 +1,8 @@
 from django.contrib import admin
-from import_export import fields, resources
+from import_export import resources
 from import_export.admin import ImportExportActionModelAdmin
-from import_export.widgets import ForeignKeyWidget
 
-from cost.models import *
+from cost.models import Detail, Assembly, Product, ManufacturingPlan, MPResources, Material, Labor, StandardDetail
 
 
 class DetailMaterialInlineAdmin(admin.TabularInline):

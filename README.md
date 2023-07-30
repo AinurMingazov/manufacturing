@@ -49,3 +49,6 @@ backup на сервере:
 python manage.py dbbackup --skip-checks --noinput --clean --compress --no-color
 
 python manage.py mediabackup --skip-checks --noinput --clean --compress --no-color
+
+---
+Гайд по настройке flake8 в PyCharm https://tirinox.ru/flake8-pycharm/

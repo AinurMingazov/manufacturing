@@ -46,57 +46,23 @@
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-body-tertiary sidebar collapse">
             <div class="position-sticky pt-3 sidebar-sticky">
                 <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">
-                            Производственные планы
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Изделия
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Сборочные узлы
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Детали
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Стандартные изделия
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Материалы
-                        </a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'plan_list' %}">Производственные планы</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'product_list' %}">Изделия</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'assembly_list' %}">Сборочные узлы</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'detail_list' %}">Детали</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'standard_detail_list' %}">Стандартные изделия</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'material_list' %}">Материалы</a></li>
                     <hr>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                Трудозатраты
-                            </a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#">Трудозатраты</a></li>
                 </ul>
-
             </div>
         </nav>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-
-
             </div>
-                    {% block content %}
-                  {% endblock %}
-
-
-
+            {% block content %}
+            {% endblock %}
         </main>
     </div>
 </div>

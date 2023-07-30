@@ -18,7 +18,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Local
     "cost.apps.CostConfig",
-    "apiv1.apps.Apiv1Config",
+    "api.apps.ApiConfig",
     # 3rd party
     "import_export",
     "rest_framework",

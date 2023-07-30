@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from apiv1 import serializers
+from api import serializers
 from cost import models
 
 

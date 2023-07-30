@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 
-from apiv1.serializers import MaterialSerializer
+from api.serializers import MaterialSerializer
 from cost import models
 
 

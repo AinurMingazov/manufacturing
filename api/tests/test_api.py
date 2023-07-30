@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from apiv1 import serializers
+from api import serializers
 from cost import models
 
 

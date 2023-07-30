@@ -34,33 +34,19 @@ def create_or_update_materials(materials_data):
         material = Material.objects.filter(name=title_tag)
         if not material:
             print(title_tag)
-            materials_create.append(
-                Material(
-                    name=title_tag,
-                    slug=slugify(title_tag),
-                    price_per_meter=price_char_tag,
-                    price_per_ton=price_tag,
-                )
-            )
+            new_mat = Material(name=title_tag,
+                               slug=slugify(title_tag),
+                               price_per_meter=price_char_tag,
+                               price_per_ton=price_tag)
+            materials_create.append(new_mat)
         elif material and hasattr(material, "price_per_ton"):
-            if (
-                material.price_per_ton != price_tag
-                or material.price_per_meter != price_char_tag
-            ):
-                materials_update.append(
-                    Material(
-                        id=material.id,
-                        name=title_tag,
-                        price_per_meter=price_char_tag,
-                        price_per_ton=price_tag,
-                    )
-                )
+            if material.price_per_ton != price_tag or material.price_per_meter != price_char_tag:
+                mat = Material(id=material.id, name=title_tag, price_per_meter=price_char_tag, price_per_ton=price_tag)
+                materials_update.append(mat)
     if materials_create:
         Material.objects.bulk_create(materials_create)
     if materials_update:
-        Material.objects.bulk_update(
-            materials_update, ["price_per_meter", "price_per_ton"]
-        )
+        Material.objects.bulk_update(materials_update, ["price_per_meter", "price_per_ton"])
 
 
 def parser_material():
