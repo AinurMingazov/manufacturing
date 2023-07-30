@@ -1,14 +1,16 @@
 from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models.functions import Length
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import View
 from cost import models
 from cost.counter_manuf_plan_service import _get_manuf_plan_resources
+from cost import forms
 from cost.services.materials_parcer import parser_material
 
 
 @staff_member_required
-def parser(request):
+def parser():
     """Функция заполняет или обновляет данные о материалах в БД"""
     parser_material()
     return HttpResponse("Parser worked")
@@ -55,24 +57,28 @@ def plan_list(request):
 
 
 class MaterialDetail(View):
+    """Отображает информацию о материале и в составе каких элементов оно участвует"""
     def get(self, request, slug):
         material = get_object_or_404(models.Material, slug=slug)
-        return render(
-            request,
-            "cost/material_detail.html",
-            {
-                "material": material,
-                "detail_materials": models.DetailMaterial.objects.filter(
-                    material=material
-                ),
-                "assembly_materials": models.AssemblyMaterial.objects.filter(
-                    material=material
-                ),
-                "product_materials": models.ProductMaterial.objects.filter(
-                    material=material
-                ),
-            },
-        )
+        return render(request,
+                      "cost/material_detail.html",
+                      {"material": material,
+                       "detail_materials": models.DetailMaterial.objects.filter(material=material),
+                       "assembly_materials": models.AssemblyMaterial.objects.filter(material=material),
+                       "product_materials": models.ProductMaterial.objects.filter(material=material)})
+
+
+class MaterialCreate(View):
+    def get(self, request):
+        form = forms.MaterialForm()
+        return render(request, "cost/forms/material_create.html", context={"form": form})
+
+    def post(self, request):
+        bound_form = forms.MaterialForm(request.POST)
+        if bound_form.is_valid():
+            new_material = bound_form.save()
+            return redirect(new_material)
+        return render(request, "cost/forms/material_create.html", context={"form": bound_form})
 
 
 def standard_detail(request, slug):

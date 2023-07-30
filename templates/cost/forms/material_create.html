@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Добавление материала - {{ block.super }}{% endblock %}
+
+{% block content %}
+
+<form action="{% url 'material_create' %}" method="post">
+  {% csrf_token %}
+  {% for field in form %}
+      <div class="form-group">
+        {% if field.errors %}
+          <div class="alert alert-danger">
+              {{ field.errors }}
+          </div>
+        {% endif %}
+        {{ field.label }}
+        {{ field }}
+      </div>
+  {% endfor %}
+  <br>
+  <button type="submit" class="btn btn-primary">Добавить материал</button>
+</form>
+{% endblock %}
