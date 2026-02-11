@@ -1,14 +1,14 @@
-# Using official python runtime base image
-FROM python:3.10
-RUN apt update
-RUN apt install -y postgresql-client
+FROM python:3.12
 
 ENV PYTHONUNBUFFERED=1
-# Set the application directory
+ENV UV_SYSTEM_PYTHON=1
+
 WORKDIR /manufacturing
-COPY requirements.txt /manufacturing/
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . /manufacturing/
 
-ENTRYPOINT ["/manufacturing/entrypoint.sh"]
+COPY pyproject.toml ./
+RUN pip install uv && uv sync --no-dev --no-install-project
 
+COPY . .
+RUN uv sync --no-dev --no-install-project
+
+ENTRYPOINT ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
