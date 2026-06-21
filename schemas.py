@@ -28,52 +28,111 @@ class MaterialResponse(MaterialBase):
         from_attributes = True
 
 
-class ManufacturingPlanResponse(BaseModel):
-    id: int
+class ManufacturingPlanBase(BaseModel):
     name: str
-    slug: str
     products: list[int] = []
     assemblies: list[int] = []
     details: list[int] = []
     labors: list[int] = []
 
+
+class ManufacturingPlanCreate(ManufacturingPlanBase):
+    pass
+
+
+class ManufacturingPlanUpdate(BaseModel):
+    name: Optional[str] = None
+    products: Optional[list[int]] = None
+    assemblies: Optional[list[int]] = None
+    details: Optional[list[int]] = None
+    labors: Optional[list[int]] = None
+
+
+class ManufacturingPlanResponse(ManufacturingPlanBase):
+    id: int
+    slug: str
+
     class Config:
         from_attributes = True
 
 
-class ProductResponse(BaseModel):
-    id: int
+class ProductBase(BaseModel):
     name: str
-    slug: str
     materials: list[int] = []
     assemblies: list[int] = []
     details: list[int] = []
     standard_details: list[int] = []
     labors: list[int] = []
 
+
+class ProductCreate(ProductBase):
+    pass
+
+
+class ProductUpdate(BaseModel):
+    name: Optional[str] = None
+    materials: Optional[list[int]] = None
+    assemblies: Optional[list[int]] = None
+    details: Optional[list[int]] = None
+    standard_details: Optional[list[int]] = None
+    labors: Optional[list[int]] = None
+
+
+class ProductResponse(ProductBase):
+    id: int
+    slug: str
+
     class Config:
         from_attributes = True
 
 
-class AssemblyResponse(BaseModel):
-    id: int
+class AssemblyBase(BaseModel):
     name: str
-    slug: str
     materials: list[int] = []
     details: list[int] = []
     standard_details: list[int] = []
     labors: list[int] = []
 
+
+class AssemblyCreate(AssemblyBase):
+    pass
+
+
+class AssemblyUpdate(BaseModel):
+    name: Optional[str] = None
+    materials: Optional[list[int]] = None
+    details: Optional[list[int]] = None
+    standard_details: Optional[list[int]] = None
+    labors: Optional[list[int]] = None
+
+
+class AssemblyResponse(AssemblyBase):
+    id: int
+    slug: str
+
     class Config:
         from_attributes = True
 
 
-class DetailResponse(BaseModel):
-    id: int
+class DetailBase(BaseModel):
     name: str
-    slug: str
     materials: list[int] = []
     labors: list[int] = []
+
+
+class DetailCreate(DetailBase):
+    pass
+
+
+class DetailUpdate(BaseModel):
+    name: Optional[str] = None
+    materials: Optional[list[int]] = None
+    labors: Optional[list[int]] = None
+
+
+class DetailResponse(DetailBase):
+    id: int
+    slug: str
 
     class Config:
         from_attributes = True
